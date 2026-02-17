@@ -1,0 +1,95 @@
+---
+title: 'Versioning'
+description: 'Manage multiple versions of your documentation for different product releases'
+icon: 'code-branch'
+---
+
+As your product evolves, you may need to maintain documentation for multiple versions. Mintlify supports version management through the `docs.json` configuration.
+
+## Setting Up Versions
+
+Add the `versions` field to your `docs.json` to enable a version dropdown in the navigation bar:
+
+```json
+{
+  "versions": ["v2.0", "v1.0"]
+}
+```
+
+The first version in the array is treated as the default (latest) version.
+
+## Organizing Versioned Content
+
+### Option 1: Version-Specific Pages
+
+Create separate pages for each version and reference them in the appropriate navigation groups:
+
+```json
+{
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Docs",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "version": "v2.0",
+            "pages": ["v2/quickstart", "v2/migration"]
+          },
+          {
+            "group": "Getting Started",
+            "version": "v1.0",
+            "pages": ["v1/quickstart"]
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Option 2: Shared Pages with Version Notes
+
+For pages that are mostly similar across versions, use callout components to highlight differences:
+
+```mdx
+## Authentication
+
+All API calls require a Bearer token in the `Authorization` header.
+
+<Note>
+  **v1.0 users**: API key authentication is also supported. See the [v1 migration guide](/v1/auth).
+</Note>
+```
+
+## Version-Specific Anchors
+
+You can show or hide navigation anchors based on the selected version:
+
+```json
+{
+  "anchors": [
+    {
+      "name": "API v2",
+      "url": "api-v2",
+      "version": "v2.0"
+    },
+    {
+      "name": "API v1 (Legacy)",
+      "url": "api-v1",
+      "version": "v1.0"
+    }
+  ]
+}
+```
+
+## Best Practices
+
+- **Default to latest**: Put the newest version first in the `versions` array.
+- **Deprecation notices**: Add `<Warning>` callouts to deprecated version pages directing users to upgrade.
+- **Shared content**: Use [reusable snippets](/essentials/reusable-snippets) for content that's identical across versions to avoid duplication.
+- **Migration guides**: Always provide a migration guide when releasing a new major version.
+
+<Tip>
+  If you only maintain one active version, you don't need to configure versioning at all. Only add it when you need to support multiple concurrent versions.
+</Tip>

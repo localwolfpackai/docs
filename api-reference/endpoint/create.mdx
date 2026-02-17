@@ -1,4 +1,35 @@
 ---
 title: 'Create Plant'
 openapi: 'POST /plants'
+description: 'Add a new plant to the store'
+icon: 'plus'
 ---
+
+<Info>
+  Send a JSON body with the plant details to create a new entry. The `name` field is required. The server will assign a unique `id` to the newly created plant.
+</Info>
+
+## Usage Notes
+
+- The `name` field is required and must be a non-empty string.
+- The `tag` field is optional and can be used to categorize the plant (e.g., "indoor", "outdoor", "tropical").
+- On success, the endpoint returns the created plant object including the server-assigned `id`.
+
+### Example Request Body
+
+```json
+{
+  "name": "Fiddle Leaf Fig",
+  "tag": "indoor"
+}
+```
+
+### Example Response
+
+```json
+{
+  "id": 12,
+  "name": "Fiddle Leaf Fig",
+  "tag": "indoor"
+}
+```

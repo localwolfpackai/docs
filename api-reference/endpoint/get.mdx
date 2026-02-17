@@ -1,4 +1,31 @@
 ---
 title: 'Get Plants'
 openapi: 'GET /plants'
+description: 'Retrieve a list of all plants in the store'
+icon: 'leaf'
 ---
+
+<Info>
+  This endpoint returns all plants that the authenticated user has access to. Use the `limit` query parameter to control the number of results returned.
+</Info>
+
+## Usage Notes
+
+- Results are returned as a JSON array of plant objects.
+- Each plant object includes `name` and an optional `tag` field.
+- If no plants exist, the endpoint returns an empty array `[]`.
+
+### Example Response
+
+```json
+[
+  {
+    "name": "Snake Plant",
+    "tag": "indoor"
+  },
+  {
+    "name": "Monstera Deliciosa",
+    "tag": "tropical"
+  }
+]
+```

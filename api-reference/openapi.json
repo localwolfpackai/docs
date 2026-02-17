@@ -1,8 +1,8 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
+    "title": "Plant Store API",
+    "description": "A RESTful API for managing a plant store inventory. Supports creating, listing, and deleting plants with webhook notifications for new additions.",
     "license": {
       "name": "MIT"
     },
@@ -10,7 +10,8 @@
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "https://sandbox.mintlify.com",
+      "description": "Sandbox environment"
     }
   ],
   "security": [
@@ -21,28 +22,96 @@
   "paths": {
     "/plants": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
+        "summary": "List all plants",
+        "description": "Returns all plants from the system that the user has access to. Results can be limited using the `limit` query parameter.",
+        "operationId": "listPlants",
         "parameters": [
           {
             "name": "limit",
             "in": "query",
-            "description": "The maximum number of results to return",
+            "description": "The maximum number of results to return. If omitted, all plants are returned.",
+            "required": false,
             "schema": {
               "type": "integer",
-              "format": "int32"
+              "format": "int32",
+              "minimum": 1,
+              "maximum": 100
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "A list of plants",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Plant"
+                    "$ref": "#/components/schemas/PlantWithId"
                   }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "Snake Plant",
+                    "tag": "indoor"
+                  },
+                  {
+                    "id": 2,
+                    "name": "Monstera Deliciosa",
+                    "tag": "tropical"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": 400,
+                  "message": "Invalid limit parameter"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new plant",
+        "description": "Creates a new plant in the store. The server assigns a unique ID to the plant on creation.",
+        "operationId": "createPlant",
+        "requestBody": {
+          "description": "Plant object to add to the store",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Plant"
+              },
+              "example": {
+                "name": "Fiddle Leaf Fig",
+                "tag": "indoor"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The newly created plant with its assigned ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlantWithId"
+                },
+                "example": {
+                  "id": 12,
+                  "name": "Fiddle Leaf Fig",
+                  "tag": "indoor"
                 }
               }
             }
@@ -53,42 +122,10 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": 400,
+                  "message": "Name field is required"
                 }
               }
             }
@@ -98,12 +135,14 @@
     },
     "/plants/{id}": {
       "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+        "summary": "Delete a plant",
+        "description": "Permanently deletes a single plant based on the ID supplied. This action cannot be undone.",
+        "operationId": "deletePlant",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "ID of plant to delete",
+            "description": "ID of the plant to delete",
             "required": true,
             "schema": {
               "type": "integer",
@@ -113,15 +152,18 @@
         ],
         "responses": {
           "204": {
-            "description": "Plant deleted",
-            "content": {}
+            "description": "Plant successfully deleted"
           },
           "400": {
-            "description": "unexpected error",
+            "description": "Unexpected error",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": 400,
+                  "message": "Plant with the specified ID was not found"
                 }
               }
             }
@@ -133,13 +175,20 @@
   "webhooks": {
     "/plant/webhook": {
       "post": {
-        "description": "Information about a new plant added to the store",
+        "summary": "New plant notification",
+        "description": "Sent when a new plant is added to the store. Your endpoint should return a 200 status code to acknowledge receipt.",
+        "operationId": "newPlantWebhook",
         "requestBody": {
-          "description": "Plant added to the store",
+          "description": "The plant that was added to the store",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/PlantWithId"
+              },
+              "example": {
+                "id": 12,
+                "name": "Fiddle Leaf Fig",
+                "tag": "indoor"
               }
             }
           }
@@ -159,36 +208,41 @@
           "name"
         ],
         "type": "object",
+        "description": "A plant object used for creating new entries",
         "properties": {
           "name": {
             "description": "The name of the plant",
-            "type": "string"
+            "type": "string",
+            "example": "Snake Plant"
           },
           "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
+            "description": "Tag to categorize the plant type (e.g., indoor, outdoor, tropical)",
+            "type": "string",
+            "example": "indoor"
           }
         }
       },
-      "NewPlant": {
+      "PlantWithId": {
         "allOf": [
           {
             "$ref": "#/components/schemas/Plant"
           },
           {
+            "type": "object",
             "required": [
               "id"
             ],
-            "type": "object",
             "properties": {
               "id": {
-                "description": "Identification number of the plant",
+                "description": "Unique identifier assigned by the server",
                 "type": "integer",
-                "format": "int64"
+                "format": "int64",
+                "example": 1
               }
             }
           }
-        ]
+        ],
+        "description": "A plant object returned from the API, including its server-assigned ID"
       },
       "Error": {
         "required": [
@@ -196,13 +250,18 @@
           "message"
         ],
         "type": "object",
+        "description": "Error response returned when a request fails",
         "properties": {
           "error": {
+            "description": "HTTP status code of the error",
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "example": 400
           },
           "message": {
-            "type": "string"
+            "description": "Human-readable description of what went wrong",
+            "type": "string",
+            "example": "Unexpected error occurred"
           }
         }
       }
@@ -210,7 +269,8 @@
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
-        "scheme": "bearer"
+        "scheme": "bearer",
+        "description": "Authenticate using a Bearer token in the Authorization header"
       }
     }
   }

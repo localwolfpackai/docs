@@ -1,20 +1,18 @@
 ---
 title: 'Code Blocks'
-description: 'Display inline code and code blocks'
+description: 'Display inline code and code blocks with syntax highlighting'
 icon: 'code'
 ---
 
-## Basic
+## Inline Code
 
-### Inline Code
-
-To denote a `word` or `phrase` as code, enclose it in backticks (`).
+To denote a `word` or `phrase` as code, enclose it in backticks (`` ` ``).
 
 ```
 To denote a `word` or `phrase` as code, enclose it in backticks (`).
 ```
 
-### Code Block
+## Code Block
 
 Use [fenced code blocks](https://www.markdownguide.org/extended-syntax/#fenced-code-blocks) by enclosing code in three backticks and follow the leading ticks with the programming language of your snippet to get syntax highlighting. Optionally, you can also write the name of your code after the programming language.
 
@@ -35,3 +33,129 @@ class HelloWorld {
 }
 ```
 ````
+
+### Multiple Languages
+
+Here are examples in several popular languages:
+
+```python app.py
+def greet(name: str) -> str:
+    """Return a greeting message."""
+    return f"Hello, {name}!"
+
+if __name__ == "__main__":
+    print(greet("World"))
+```
+
+```javascript index.js
+function greet(name) {
+  return `Hello, ${name}!`;
+}
+
+console.log(greet("World"));
+```
+
+```typescript handler.ts
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+function getUser(id: number): User {
+  return { id, name: "Jane Doe", email: "jane@example.com" };
+}
+```
+
+```go main.go
+package main
+
+import "fmt"
+
+func greet(name string) string {
+    return fmt.Sprintf("Hello, %s!", name)
+}
+
+func main() {
+    fmt.Println(greet("World"))
+}
+```
+
+```bash terminal
+curl -X GET https://api.example.com/plants \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+## Code Group
+
+Use the `<CodeGroup>` component to display multiple code blocks in a tabbed interface. This is useful when showing the same operation in different languages or package managers.
+
+<CodeGroup>
+
+```bash npm
+npm install mintlify
+```
+
+```bash yarn
+yarn add mintlify
+```
+
+```bash pnpm
+pnpm add mintlify
+```
+
+</CodeGroup>
+
+````md
+<CodeGroup>
+
+```bash npm
+npm install mintlify
+```
+
+```bash yarn
+yarn add mintlify
+```
+
+```bash pnpm
+pnpm add mintlify
+```
+
+</CodeGroup>
+````
+
+### API Request Examples
+
+<CodeGroup>
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.example.com/plants",
+    headers={"Authorization": "Bearer YOUR_TOKEN"}
+)
+plants = response.json()
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.example.com/plants", {
+  headers: { Authorization: "Bearer YOUR_TOKEN" },
+});
+const plants = await response.json();
+```
+
+```bash cURL
+curl -X GET https://api.example.com/plants \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+</CodeGroup>
+
+## Best Practices
+
+- **Always specify the language** after the opening backticks for syntax highlighting.
+- **Add a file name** after the language identifier to show the file name above the code block.
+- **Use `<CodeGroup>`** when showing the same concept in multiple languages or tools.
+- **Keep code examples concise** and focused on the concept being demonstrated.
