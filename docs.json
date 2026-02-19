@@ -1,20 +1,20 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Lupo Studios",
+  "name": "humanlup docs",
   "colors": {
-    "primary": "#6D28D9",
-    "light": "#8B5CF6",
-    "dark": "#4C1D95"
+    "primary": "#06B6D4",
+    "light": "#22D3EE",
+    "dark": "#0891B2"
   },
   "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Toolkit",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Start Here",
             "pages": [
               "index",
               "quickstart",
@@ -33,7 +33,7 @@
             ]
           },
           {
-            "group": "Advanced",
+            "group": "Going Deeper",
             "pages": [
               "advanced/components",
               "advanced/seo-metadata",
@@ -46,14 +46,14 @@
         "tab": "API Reference",
         "groups": [
           {
-            "group": "API Documentation",
+            "group": "Overview",
             "pages": [
               "api-reference/introduction",
               "api-reference/authentication"
             ]
           },
           {
-            "group": "Endpoint Examples",
+            "group": "Endpoints",
             "pages": [
               "api-reference/endpoint/get",
               "api-reference/endpoint/create",
@@ -67,19 +67,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "GitHub",
+          "href": "https://github.com/localwolfpackai",
+          "icon": "github"
         },
         {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Skills.sh",
+          "href": "https://skills.sh",
+          "icon": "bolt"
         }
       ]
     }
@@ -91,21 +86,19 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:support@lupostudios.dev"
+        "label": "GitHub",
+        "href": "https://github.com/localwolfpackai"
       }
     ],
     "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "type": "github",
+      "label": "GitHub",
+      "href": "https://github.com/localwolfpackai/docs"
     }
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/localwolfpackai",
-      "x": "https://x.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/localwolfpackai"
     }
   },
   "feedback": {
@@ -113,7 +106,7 @@
     "raiseIssue": true
   },
   "search": {
-    "prompt": "Search documentation..."
+    "prompt": "Search my docs..."
   },
   "openapi": ["/api-reference/openapi.json"]
 }

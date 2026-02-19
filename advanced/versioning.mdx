@@ -1,14 +1,14 @@
 ---
 title: 'Versioning'
-description: 'Manage multiple versions of your documentation for different product releases'
+description: 'How to manage multiple versions of docs when I need to'
 icon: 'code-branch'
 ---
 
-As your product evolves, you may need to maintain documentation for multiple versions. Mintlify supports version management through the `docs.json` configuration.
+I don't use versioning yet since I'm solo, but I set this up for when I need it. Here's how it works.
 
-## Setting Up Versions
+## Turning It On
 
-Add the `versions` field to your `docs.json` to enable a version dropdown in the navigation bar:
+Add `versions` to `docs.json`:
 
 ```json
 {
@@ -16,13 +16,13 @@ Add the `versions` field to your `docs.json` to enable a version dropdown in the
 }
 ```
 
-The first version in the array is treated as the default (latest) version.
+First in the array = default (latest). A dropdown appears in the nav bar.
 
-## Organizing Versioned Content
+## Two Ways to Handle It
 
-### Option 1: Version-Specific Pages
+### Separate Pages Per Version
 
-Create separate pages for each version and reference them in the appropriate navigation groups:
+Create different folders and wire them up:
 
 ```json
 {
@@ -48,48 +48,24 @@ Create separate pages for each version and reference them in the appropriate nav
 }
 ```
 
-### Option 2: Shared Pages with Version Notes
+### Same Pages with Version Callouts
 
-For pages that are mostly similar across versions, use callout components to highlight differences:
+For pages that are mostly the same, just add a note:
 
 ```mdx
 ## Authentication
 
-All API calls require a Bearer token in the `Authorization` header.
+All API calls require a Bearer token.
 
 <Note>
-  **v1.0 users**: API key authentication is also supported. See the [v1 migration guide](/v1/auth).
+  **v1.0 users**: API key auth is also supported. See the [v1 migration guide](/v1/auth).
 </Note>
 ```
 
-## Version-Specific Anchors
+## My Plan
 
-You can show or hide navigation anchors based on the selected version:
-
-```json
-{
-  "anchors": [
-    {
-      "name": "API v2",
-      "url": "api-v2",
-      "version": "v2.0"
-    },
-    {
-      "name": "API v1 (Legacy)",
-      "url": "api-v1",
-      "version": "v1.0"
-    }
-  ]
-}
-```
-
-## Best Practices
-
-- **Default to latest**: Put the newest version first in the `versions` array.
-- **Deprecation notices**: Add `<Warning>` callouts to deprecated version pages directing users to upgrade.
-- **Shared content**: Use [reusable snippets](/essentials/reusable-snippets) for content that's identical across versions to avoid duplication.
-- **Migration guides**: Always provide a migration guide when releasing a new major version.
+When I eventually need versioning, I'll probably go with shared pages + callouts for minor differences, and separate page trees only for major version breaks.
 
 <Tip>
-  If you only maintain one active version, you don't need to configure versioning at all. Only add it when you need to support multiple concurrent versions.
+  If you're solo and only have one version, don't bother with this. Add it when you actually need it.
 </Tip>

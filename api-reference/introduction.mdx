@@ -1,14 +1,14 @@
 ---
 title: 'API Reference'
-description: 'Complete reference for the Plant Store API endpoints'
+description: 'How I set up API documentation with OpenAPI and Mintlify'
 icon: 'book'
 ---
 
-The Plant Store API provides a RESTful interface for managing a collection of plants. This reference documents all available endpoints, request/response formats, and authentication requirements.
+This is a working example of API docs auto-generated from an OpenAPI spec. I use it as a template for any project that needs API documentation.
 
-## Overview
+## How it works
 
-There are two ways to build API documentation with Mintlify: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). This documentation uses the OpenAPI approach, which auto-generates interactive endpoint pages from a specification file.
+Mintlify can generate interactive API docs from an [OpenAPI spec](https://mintlify.com/docs/api-playground/openapi/setup). You write the spec, create thin MDX wrappers for each endpoint, and the framework handles the rest — request/response schemas, auth headers, try-it-out playground.
 
 <CardGroup cols={2}>
   <Card
@@ -16,67 +16,48 @@ There are two ways to build API documentation with Mintlify: [OpenAPI](https://m
     icon="lock"
     href="/api-reference/authentication"
   >
-    Learn how to authenticate your API requests with Bearer tokens.
+    How Bearer token auth is set up in the spec.
   </Card>
   <Card
     title="OpenAPI Spec"
     icon="leaf"
     href="https://github.com/localwolfpackai/docs/blob/main/api-reference/openapi.json"
   >
-    View the OpenAPI specification file on GitHub.
+    The raw spec file on GitHub.
   </Card>
 </CardGroup>
 
 ## Base URL
 
-All API requests are made to the following base URL:
-
 ```
 https://sandbox.mintlify.com
 ```
 
-## Available Endpoints
+## Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/plants` | Retrieve all plants the user has access to |
-| `POST` | `/plants` | Create a new plant in the store |
-| `DELETE` | `/plants/{id}` | Delete a plant by its ID |
+| Method | Path | What it does |
+|--------|------|-------------|
+| `GET` | `/plants` | List all plants |
+| `POST` | `/plants` | Create a new plant |
+| `DELETE` | `/plants/{id}` | Delete a plant by ID |
 
 ## Webhooks
 
-| Event | Endpoint | Description |
-|-------|----------|-------------|
-| New Plant | `/plant/webhook` | Fires when a new plant is added to the store |
+| Event | Path | What it does |
+|-------|------|-------------|
+| New Plant | `/plant/webhook` | Fires when a plant is created |
 
-## Authentication
+## Auth
 
-All endpoints require Bearer token authentication. Include your token in the `Authorization` header:
+Everything uses Bearer tokens. See the [Authentication](/api-reference/authentication) page.
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
-```
+## Errors
 
-See the [Authentication](/api-reference/authentication) page for detailed setup instructions.
-
-## Error Handling
-
-The API uses standard HTTP status codes. Error responses include a JSON body with `error` (status code) and `message` fields:
+All errors return JSON with `error` (status code) and `message`:
 
 ```json
 {
   "error": 400,
-  "message": "A description of what went wrong"
+  "message": "What went wrong"
 }
 ```
-
-| Status Code | Meaning |
-|---|---|
-| `200` | Success |
-| `204` | Success (no content) |
-| `400` | Bad request or unexpected error |
-| `401` | Authentication required |
