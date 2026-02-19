@@ -1,4 +1,25 @@
 ---
 title: 'Delete Plant'
 openapi: 'DELETE /plants/{id}'
+description: 'Remove a plant from the store by its ID'
+icon: 'trash'
 ---
+
+<Warning>
+  This action is permanent. Once a plant is deleted, it cannot be recovered. Make sure you have the correct plant ID before calling this endpoint.
+</Warning>
+
+## Usage Notes
+
+- The `id` path parameter is required and must be an integer.
+- On success, the endpoint returns a `204 No Content` response with an empty body.
+- If the specified `id` does not exist, the API returns a `400` error.
+
+### Example Error Response
+
+```json
+{
+  "error": 400,
+  "message": "Plant with the specified ID was not found"
+}
+```

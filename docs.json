@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Lupo Studios",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#6D28D9",
+    "light": "#8B5CF6",
+    "dark": "#4C1D95"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -31,6 +31,14 @@
               "essentials/navigation",
               "essentials/reusable-snippets"
             ]
+          },
+          {
+            "group": "Advanced",
+            "pages": [
+              "advanced/components",
+              "advanced/seo-metadata",
+              "advanced/versioning"
+            ]
           }
         ]
       },
@@ -40,7 +48,8 @@
           {
             "group": "API Documentation",
             "pages": [
-              "api-reference/introduction"
+              "api-reference/introduction",
+              "api-reference/authentication"
             ]
           },
           {
@@ -83,7 +92,7 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@lupostudios.dev"
       }
     ],
     "primary": {
@@ -94,9 +103,17 @@
   },
   "footer": {
     "socials": {
+      "github": "https://github.com/localwolfpackai",
       "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
       "linkedin": "https://linkedin.com/company/mintlify"
     }
-  }
+  },
+  "feedback": {
+    "suggestEdit": true,
+    "raiseIssue": true
+  },
+  "search": {
+    "prompt": "Search documentation..."
+  },
+  "openapi": ["/api-reference/openapi.json"]
 }

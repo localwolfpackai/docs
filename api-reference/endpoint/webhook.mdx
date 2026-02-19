@@ -1,4 +1,57 @@
 ---
-title: 'New Plant'
+title: 'New Plant Webhook'
 openapi: 'WEBHOOK /plant/webhook'
+description: 'Receive notifications when a new plant is added to the store'
+icon: 'bell'
 ---
+
+<Info>
+  Webhooks are HTTP callbacks that notify your application when specific events occur. The plant webhook fires whenever a new plant is created in the store.
+</Info>
+
+## Usage Notes
+
+- Your endpoint must return a `200` status code to acknowledge receipt. If the webhook does not receive a `200` response, it may retry the delivery.
+- The request body contains the full plant object including its `id`, `name`, and optional `tag`.
+- Webhook payloads are sent as `POST` requests with a `Content-Type: application/json` header.
+
+### Example Payload
+
+```json
+{
+  "id": 12,
+  "name": "Fiddle Leaf Fig",
+  "tag": "indoor"
+}
+```
+
+### Handling Webhooks
+
+<CodeGroup>
+
+```python Python
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route("/webhook/plant", methods=["POST"])
+def handle_plant_webhook():
+    plant = request.get_json()
+    print(f"New plant added: {plant['name']}")
+    return jsonify({"status": "received"}), 200
+```
+
+```javascript Node.js
+const express = require("express");
+const app = express();
+
+app.use(express.json());
+
+app.post("/webhook/plant", (req, res) => {
+  const plant = req.body;
+  console.log(`New plant added: ${plant.name}`);
+  res.status(200).json({ status: "received" });
+});
+```
+
+</CodeGroup>

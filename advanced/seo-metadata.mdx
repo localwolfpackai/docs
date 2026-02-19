@@ -1,0 +1,87 @@
+---
+title: 'SEO & Metadata'
+description: 'Optimize your documentation for search engines and social sharing'
+icon: 'magnifying-glass'
+---
+
+Good documentation needs to be discoverable. Mintlify handles many SEO best practices automatically, but you can fine-tune how your pages appear in search results and social media shares.
+
+## Page Frontmatter
+
+Every MDX page should include frontmatter with `title` and `description`. These are used for:
+
+- **Browser tab titles** and search engine result page (SERP) headings
+- **Meta description** tags for search engine snippets
+- **Open Graph** and **Twitter Card** metadata for social sharing
+
+```mdx
+---
+title: 'Your Page Title'
+description: 'A clear, concise description of what this page covers (50-160 characters ideal)'
+---
+```
+
+<Warning>
+  Pages without a `description` in frontmatter will have generic meta descriptions, which hurts search visibility.
+</Warning>
+
+## Best Practices
+
+### Titles
+
+- Keep titles under 60 characters so they display fully in search results.
+- Use descriptive, specific titles: "Authentication with Bearer Tokens" is better than "Auth".
+- Include relevant keywords naturally in the title.
+
+### Descriptions
+
+- Write descriptions between 50 and 160 characters.
+- Summarize the page content in a way that tells users what they'll learn.
+- Include primary keywords near the beginning of the description.
+
+### Internal Links
+
+- Use **root-relative** links (`/essentials/markdown`) instead of relative links (`../markdown`) for faster navigation and better crawlability.
+- Link related pages to each other to create a strong internal link structure.
+- Use descriptive anchor text: `[configure navigation](/essentials/navigation)` is better than `[click here](/essentials/navigation)`.
+
+### Headings
+
+- Use a logical heading hierarchy (`##` then `###` then `####`).
+- Each heading creates an anchor link and appears in the table of contents.
+- Include keywords in headings where it reads naturally.
+
+## Site Configuration
+
+The `docs.json` file controls site-level metadata:
+
+```json
+{
+  "name": "Lupo Studios",
+  "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  }
+}
+```
+
+<ResponseField name="name" type="string" required>
+  Your project name. Used in the browser tab title and site header.
+</ResponseField>
+
+<ResponseField name="favicon" type="string">
+  Path to the favicon file. SVG format is recommended for sharpness at all sizes.
+</ResponseField>
+
+## Sitemap
+
+Mintlify automatically generates a `sitemap.xml` for your documentation site. This file is submitted to search engines and includes all pages listed in your `docs.json` navigation.
+
+<Tip>
+  Pages not listed in `docs.json` navigation won't appear in the sitemap, but they are still accessible via direct links and the search bar.
+</Tip>
+
+## Social Sharing
+
+When someone shares a link to your docs on social media, the page's frontmatter `title` and `description` are used to generate the preview card. Ensure every page has both fields set for consistent, professional link previews.
