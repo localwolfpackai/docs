@@ -1,201 +1,148 @@
 ---
-title: 'Components'
-description: 'Interactive MDX components for building rich documentation experiences'
-icon: 'puzzle-piece'
+title: 'Components & Agent Skills'
+description: 'MDX components I use and the AI agent tools in my workflow'
+icon: 'bolt'
 ---
 
-Mintlify provides a library of built-in React components that you can use directly in your MDX files. These components render interactive, styled elements without writing custom CSS or JavaScript.
+This page covers two things: the built-in MDX components I use on this site, and the AI agent tools and skills that are part of my daily workflow.
 
-## Callout Components
+## AI Agent Tools I Use
 
-Use callouts to draw attention to important information.
+These are the tools I actually run. Not a wishlist — these are installed and configured.
+
+### Claude Code
+
+My primary coding agent. I use it for everything from writing code to managing git workflows.
+
+```bash
+# install skills for Claude Code
+npx skills add claude-code
+
+# or browse what's available
+npx skills search
+```
+
+<Tip>
+  Check out [skills.sh](https://skills.sh) for the full directory of agent skills. It's like a package manager for AI agent knowledge.
+</Tip>
+
+### MCP Servers
+
+Model Context Protocol servers give agents access to external tools. The ones I use most:
+
+- **Filesystem** — lets the agent read/write files on disk
+- **GitHub** — PR creation, issue management, repo search
+- **Fetch** — HTTP requests from within agent context
+- **Memory** — persistent context across sessions
+
+### Agent Workflow
+
+My typical flow:
+
+1. Open Claude Code in the project directory
+2. Describe what I want to build or fix
+3. The agent reads the codebase, makes changes, runs tests
+4. I review and push
+
+<Warning>
+  Always review agent-generated code before pushing. Agents are fast but not infallible.
+</Warning>
+
+---
+
+## MDX Components
+
+These are the Mintlify components I use to build pages on this site.
+
+### Callouts
 
 <Note>
-  This is a **Note** callout. Use it for general information that supplements the main content.
+  **Note** — general info that supplements the main content.
 </Note>
 
 <Tip>
-  This is a **Tip** callout. Use it for helpful suggestions and best practices.
+  **Tip** — helpful suggestions and things I've learned the hard way.
 </Tip>
 
 <Info>
-  This is an **Info** callout. Use it for important contextual information.
+  **Info** — important context you should know.
 </Info>
 
 <Warning>
-  This is a **Warning** callout. Use it for cautionary messages about potential issues.
+  **Warning** — things that will bite you if you're not careful.
 </Warning>
 
 ```mdx
-<Note>General information about a topic.</Note>
-
-<Tip>A helpful suggestion for the reader.</Tip>
-
-<Info>Important contextual information.</Info>
-
-<Warning>A cautionary message about potential issues.</Warning>
+<Note>General information.</Note>
+<Tip>A helpful suggestion.</Tip>
+<Info>Important context.</Info>
+<Warning>Watch out for this.</Warning>
 ```
 
-## Cards
+### Cards
 
-Cards create clickable navigation elements with icons and descriptions.
-
-<Card title="Quickstart Guide" icon="rocket" href="/quickstart">
-  Get your documentation site running in minutes.
+<Card title="Quickstart" icon="rocket" href="/quickstart">
+  Get the docs site running locally.
 </Card>
 
 ```mdx
-<Card title="Quickstart Guide" icon="rocket" href="/quickstart">
-  Get your documentation site running in minutes.
+<Card title="Quickstart" icon="rocket" href="/quickstart">
+  Get the docs site running locally.
 </Card>
 ```
 
 ### Card Groups
 
-Use `<CardGroup>` to arrange multiple cards in a responsive grid.
-
 <CardGroup cols={2}>
   <Card title="Markdown" icon="text-size" href="/essentials/markdown">
-    Write content with standard markdown syntax.
+    Syntax reference.
   </Card>
   <Card title="Code Blocks" icon="code" href="/essentials/code">
-    Display syntax-highlighted code examples.
-  </Card>
-  <Card title="Images" icon="image" href="/essentials/images">
-    Add images with light/dark mode support.
-  </Card>
-  <Card title="Navigation" icon="map" href="/essentials/navigation">
-    Configure your site's navigation structure.
+    Syntax highlighting and tabs.
   </Card>
 </CardGroup>
 
-```mdx
-<CardGroup cols={2}>
-  <Card title="Markdown" icon="text-size" href="/essentials/markdown">
-    Write content with standard markdown syntax.
-  </Card>
-  <Card title="Code Blocks" icon="code" href="/essentials/code">
-    Display syntax-highlighted code examples.
-  </Card>
-</CardGroup>
-```
-
-## Accordions
-
-Accordions create collapsible sections for organizing detailed content.
+### Accordions
 
 <AccordionGroup>
-  <Accordion title="What is Mintlify?">
-    Mintlify is a modern documentation platform that turns MDX files into beautiful documentation sites. It supports React components, OpenAPI integration, and automatic deployment.
+  <Accordion title="How do I add a new page?">
+    Create an `.mdx` file, add frontmatter, then add it to `docs.json` navigation.
   </Accordion>
   <Accordion title="How do I deploy?">
-    Install the Mintlify GitHub app from your dashboard. Once installed, every push to your default branch triggers an automatic deployment. You can also deploy manually through the dashboard.
-  </Accordion>
-  <Accordion title="Can I use custom components?">
-    Yes. You can create reusable snippets in the `/snippets` directory and import them into any page. Snippets support default exports, named variable exports, and arrow function components.
+    Push to main. The Mintlify GitHub app handles the rest.
   </Accordion>
 </AccordionGroup>
 
-```mdx
-<AccordionGroup>
-  <Accordion title="What is Mintlify?">
-    Mintlify is a modern documentation platform...
-  </Accordion>
-  <Accordion title="How do I deploy?">
-    Install the Mintlify GitHub app...
-  </Accordion>
-</AccordionGroup>
-```
-
-## Code Groups
-
-Code groups display multiple code blocks in a tabbed interface. See the [Code Blocks](/essentials/code) page for detailed usage.
+### Code Groups
 
 <CodeGroup>
 
 ```python Python
-print("Hello from Python")
+print("hello from python")
 ```
 
 ```javascript JavaScript
-console.log("Hello from JavaScript");
+console.log("hello from javascript");
 ```
 
 ```bash Shell
-echo "Hello from the shell"
+echo "hello from the shell"
 ```
 
 </CodeGroup>
 
-## Frames
+### Frames
 
-The `<Frame>` component wraps content (typically images) with a styled border and optional caption.
-
-<Frame caption="Successful deployment check marks">
+<Frame caption="What a successful deploy looks like">
   <img src="/images/checks-passed.png" style={{ borderRadius: '0.5rem' }} />
 </Frame>
 
-```mdx
-<Frame caption="Successful deployment check marks">
-  <img src="/images/checks-passed.png" style={{ borderRadius: '0.5rem' }} />
-</Frame>
-```
+### Icons
 
-## Response Fields
-
-Use `<ResponseField>` to document API response structures, configuration properties, or any structured data.
-
-<ResponseField name="name" type="string" required>
-  The name of the resource. Must be unique within the project.
-</ResponseField>
-
-<ResponseField name="settings" type="object">
-  Configuration options for the resource.
-  <Expandable title="Properties">
-    <ResponseField name="enabled" type="boolean" default="true">
-      Whether the resource is active.
-    </ResponseField>
-    <ResponseField name="timeout" type="integer" default="30">
-      Timeout in seconds before the request is cancelled.
-    </ResponseField>
-  </Expandable>
-</ResponseField>
-
-```mdx
-<ResponseField name="name" type="string" required>
-  The name of the resource.
-</ResponseField>
-
-<ResponseField name="settings" type="object">
-  Configuration options.
-  <Expandable title="Properties">
-    <ResponseField name="enabled" type="boolean" default="true">
-      Whether the resource is active.
-    </ResponseField>
-  </Expandable>
-</ResponseField>
-```
-
-## LaTeX
-
-Render mathematical formulas using the `<Latex>` component.
-
-<Latex>E = mc^2</Latex>
-
-<Latex>\sum_{i=1}^{n} x_i = x_1 + x_2 + \ldots + x_n</Latex>
-
-```mdx
-<Latex>E = mc^2</Latex>
-
-<Latex>\sum_{i=1}^{n} x_i = x_1 + x_2 + \ldots + x_n</Latex>
-```
-
-## Icons
-
-All icon references use [Font Awesome](https://fontawesome.com/search) icon names. Simply pass the icon name as a string attribute.
+All icons come from [Font Awesome](https://fontawesome.com/search). Just pass the name as a string.
 
 ```mdx
 <Card title="Settings" icon="gear" href="/essentials/settings">
-  Configure your documentation site.
+  Configure the site.
 </Card>
 ```

@@ -1,63 +1,55 @@
 ---
 title: 'SEO & Metadata'
-description: 'Optimize your documentation for search engines and social sharing'
+description: 'How I set up pages so they show up properly in search and social shares'
 icon: 'magnifying-glass'
 ---
 
-Good documentation needs to be discoverable. Mintlify handles many SEO best practices automatically, but you can fine-tune how your pages appear in search results and social media shares.
+Mintlify handles most SEO automatically, but I still make sure every page has good frontmatter. Here's what I do.
 
-## Page Frontmatter
+## Frontmatter on Every Page
 
-Every MDX page should include frontmatter with `title` and `description`. These are used for:
-
-- **Browser tab titles** and search engine result page (SERP) headings
-- **Meta description** tags for search engine snippets
-- **Open Graph** and **Twitter Card** metadata for social sharing
+Every `.mdx` file starts with this:
 
 ```mdx
 ---
-title: 'Your Page Title'
-description: 'A clear, concise description of what this page covers (50-160 characters ideal)'
+title: 'Clear, Specific Title'
+description: 'What this page covers in 50-160 characters'
+icon: 'font-awesome-icon-name'
 ---
 ```
 
+The `title` becomes the browser tab title and the `<h1>`. The `description` becomes the meta description for search engines and the preview text when someone shares the link.
+
 <Warning>
-  Pages without a `description` in frontmatter will have generic meta descriptions, which hurts search visibility.
+  Pages without a `description` get generic meta tags. Always fill it in.
 </Warning>
 
-## Best Practices
+## What I Keep in Mind
 
 ### Titles
-
-- Keep titles under 60 characters so they display fully in search results.
-- Use descriptive, specific titles: "Authentication with Bearer Tokens" is better than "Auth".
-- Include relevant keywords naturally in the title.
+- Under 60 characters so they don't get truncated in search results
+- Specific: "Code Blocks & Syntax Highlighting" not "Code"
 
 ### Descriptions
+- 50-160 characters
+- Summarize what the reader will learn
+- Front-load the important keywords
 
-- Write descriptions between 50 and 160 characters.
-- Summarize the page content in a way that tells users what they'll learn.
-- Include primary keywords near the beginning of the description.
-
-### Internal Links
-
-- Use **root-relative** links (`/essentials/markdown`) instead of relative links (`../markdown`) for faster navigation and better crawlability.
-- Link related pages to each other to create a strong internal link structure.
-- Use descriptive anchor text: `[configure navigation](/essentials/navigation)` is better than `[click here](/essentials/navigation)`.
+### Links
+- Always root-relative: `/essentials/markdown` not `../markdown`
+- Descriptive anchor text: `[configure navigation](/essentials/navigation)` not `[click here](/essentials/navigation)`
 
 ### Headings
+- Logical hierarchy: `##` then `###` then `####`
+- Every heading creates an anchor link and shows up in the right-side table of contents
 
-- Use a logical heading hierarchy (`##` then `###` then `####`).
-- Each heading creates an anchor link and appears in the table of contents.
-- Include keywords in headings where it reads naturally.
+## Site-Level Config
 
-## Site Configuration
-
-The `docs.json` file controls site-level metadata:
+In `docs.json`:
 
 ```json
 {
-  "name": "Lupo Studios",
+  "name": "humanlup docs",
   "favicon": "/favicon.svg",
   "logo": {
     "light": "/logo/light.svg",
@@ -66,22 +58,12 @@ The `docs.json` file controls site-level metadata:
 }
 ```
 
-<ResponseField name="name" type="string" required>
-  Your project name. Used in the browser tab title and site header.
-</ResponseField>
-
-<ResponseField name="favicon" type="string">
-  Path to the favicon file. SVG format is recommended for sharpness at all sizes.
-</ResponseField>
+The `name` shows in the browser tab. The favicon and logo handle branding.
 
 ## Sitemap
 
-Mintlify automatically generates a `sitemap.xml` for your documentation site. This file is submitted to search engines and includes all pages listed in your `docs.json` navigation.
-
-<Tip>
-  Pages not listed in `docs.json` navigation won't appear in the sitemap, but they are still accessible via direct links and the search bar.
-</Tip>
+Mintlify generates `sitemap.xml` automatically from everything in `docs.json` navigation. Pages not in navigation won't be in the sitemap (but they're still accessible via direct links and search).
 
 ## Social Sharing
 
-When someone shares a link to your docs on social media, the page's frontmatter `title` and `description` are used to generate the preview card. Ensure every page has both fields set for consistent, professional link previews.
+When someone shares a link, the `title` and `description` from frontmatter generate the preview card. No extra config needed — just make sure every page has both.
