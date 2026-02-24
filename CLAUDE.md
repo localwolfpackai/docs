@@ -1,8 +1,8 @@
-# CLAUDE.md - AI Assistant Guide for Mintlify Documentation Repository
+# CLAUDE.md - AI Assistant Guide for humanlup docs
 
 ## Repository Overview
 
-This repository is a **Mintlify documentation starter kit** - a modern documentation platform that uses MDX (Markdown + JSX) to create beautiful, interactive documentation sites. The project uses Mintlify's documentation framework to render content with custom React components and supports both content documentation and API reference documentation.
+This repository is **humanlup docs** — a personal documentation site built with Mintlify. It uses MDX (Markdown + JSX) for content pages, `docs.json` for all site configuration, and OpenAPI for auto-generated API reference documentation.
 
 **Key Technologies:**
 - Mintlify CLI (Node.js v19+)
@@ -17,21 +17,27 @@ This repository is a **Mintlify documentation starter kit** - a modern documenta
 ├── docs.json                    # Main configuration file (navigation, theme, branding)
 ├── index.mdx                    # Homepage/landing page
 ├── quickstart.mdx               # Getting started guide
-├── development.mdx              # Development setup instructions
-├── README.md                    # Repository readme with basic setup
+├── development.mdx              # Dev environment setup
+├── README.md                    # Repository readme
 │
-├── essentials/                  # Core documentation guides
-│   ├── markdown.mdx            # Markdown syntax reference
-│   ├── code.mdx                # Code block examples
-│   ├── images.mdx              # Image usage guide
-│   ├── settings.mdx            # Settings configuration
-│   ├── navigation.mdx          # Navigation setup
+├── essentials/                  # Core reference pages
+│   ├── markdown.mdx            # Markdown & MDX syntax
+│   ├── code.mdx                # Code blocks & highlighting
+│   ├── images.mdx              # Images, embeds, dark mode
+│   ├── settings.mdx            # docs.json config reference
+│   ├── navigation.mdx          # Sidebar & tab setup
 │   └── reusable-snippets.mdx   # Snippet/component reuse
 │
-├── api-reference/               # API documentation section
+├── advanced/                    # Deeper topics
+│   ├── components.mdx          # MDX components & agent tools
+│   ├── seo-metadata.mdx        # SEO & metadata setup
+│   └── versioning.mdx          # Multi-version docs
+│
+├── api-reference/               # API documentation
 │   ├── introduction.mdx        # API docs overview
-│   ├── openapi.json            # OpenAPI specification
-│   └── endpoint/               # API endpoint examples
+│   ├── authentication.mdx      # Bearer token auth
+│   ├── openapi.json            # OpenAPI 3.1 specification
+│   └── endpoint/               # Endpoint pages
 │       ├── get.mdx
 │       ├── create.mdx
 │       ├── delete.mdx
@@ -381,11 +387,12 @@ Follow conventional commit format:
 
 ### Content Quality
 
-1. **Clear, concise writing** - Documentation should be scannable
-2. **Use appropriate components** - Cards for navigation, Accordions for detailed steps
-3. **Code examples** - Always include practical examples
-4. **Consistent formatting** - Follow existing patterns in the codebase
-5. **SEO-friendly** - Meaningful titles and descriptions in frontmatter
+1. **First-person, casual voice** - This is a personal site. Write like you're explaining something to yourself in six months
+2. **Clear, concise writing** - Documentation should be scannable
+3. **Use appropriate components** - Cards for navigation, Accordions for detailed steps
+4. **Code examples** - Always include practical examples
+5. **Consistent formatting** - Follow existing patterns in the codebase
+6. **SEO-friendly** - Meaningful titles and descriptions in frontmatter
 
 ### File Management
 
@@ -487,6 +494,5 @@ Follow conventional commit format:
 
 ---
 
-**Last Updated:** 2025-11-14
+**Last Updated:** 2026-02-24
 **Repository:** localwolfpackai/docs
-**Branch:** claude/claude-md-mhylzprgrvak9wo1-01BaybaRw8xCznaDuSq2HXZA
