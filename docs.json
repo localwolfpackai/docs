@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "humanlup docs",
   "colors": {
-    "primary": "#06B6D4",
-    "light": "#22D3EE",
-    "dark": "#0891B2"
+    "primary": "#64748B",
+    "light": "#94A3B8",
+    "dark": "#475569"
   },
   "favicon": "/favicon.svg",
   "navigation": {

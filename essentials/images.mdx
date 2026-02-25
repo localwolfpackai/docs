@@ -1,90 +1,85 @@
 ---
-title: 'Images and Embeds'
-description: 'Add images, videos, and other HTML elements to your documentation'
+title: 'Images & Embeds'
+description: 'How I add images, videos, and other media to pages'
 icon: 'image'
 ---
 
-<img
-  style={{ borderRadius: '0.5rem' }}
-  src="https://mintlify-assets.b-cdn.net/bigbend.jpg"
-  alt="Big Bend National Park landscape"
-/>
+## Images
 
-## Image
+### Markdown Syntax
 
-### Using Markdown
-
-The [markdown syntax](https://www.markdownguide.org/basic-syntax/#images) lets you add images using the following code:
+The simplest way to add an image:
 
 ```md
-![title](/images/my-image.jpg)
+![alt text](/images/my-image.png)
 ```
 
-Note that the image file size must be less than 5MB. Otherwise, we recommend hosting on a service like [Cloudinary](https://cloudinary.com/) or [S3](https://aws.amazon.com/s3/). You can then use that URL and embed.
+Images must be under 5MB. For anything larger, host it on a service like [Cloudinary](https://cloudinary.com/) or [S3](https://aws.amazon.com/s3/) and use the URL.
 
-### Using HTML Embeds
+### HTML Embeds
 
-To get more customizability with images, you can also use HTML `<img>` tags directly:
+For more control over sizing and styling, use `<img>` tags directly:
 
 ```html
-<img height="200" src="/images/my-image.jpg" alt="Description of the image" />
+<img height="200" src="/images/my-image.png" alt="Description" />
 ```
 
 ### Light and Dark Mode
 
-You can display different images depending on the user's color scheme using CSS classes:
+Display different images based on the user's color scheme:
 
 ```html
 <img className="block dark:hidden" src="/images/hero-light.png" alt="Light mode hero" />
 <img className="hidden dark:block" src="/images/hero-dark.png" alt="Dark mode hero" />
 ```
 
+This is what I use on the homepage:
+
+<img className="block dark:hidden" src="/images/hero-light.png" alt="humanlup docs hero — light" />
+<img className="hidden dark:block" src="/images/hero-dark.png" alt="humanlup docs hero — dark" />
+
 <Tip>
-  Store all images in the `/images/` directory and reference them using root-relative paths like `/images/filename.png`.
+  Store all images in `/images/` and reference them with root-relative paths like `/images/filename.png`.
 </Tip>
 
-### Using the Frame Component
+### The Frame Component
 
-The `<Frame>` component adds a styled border and optional caption to images:
+`<Frame>` adds a styled border and optional caption:
 
 ```html
-<Frame caption="A beautiful landscape">
-  <img src="/images/my-image.jpg" alt="Landscape" />
+<Frame caption="Deploy checks passing">
+  <img src="/images/checks-passed.png" alt="Checks passed" />
 </Frame>
 ```
 
-## Embeds and HTML Elements
+<Frame caption="Deploy checks passing">
+  <img src="/images/checks-passed.png" style={{ borderRadius: '0.5rem' }} />
+</Frame>
 
-<iframe
-  width="560"
-  height="315"
-  src="https://www.youtube.com/embed/4KzFe50RQkQ"
-  title="YouTube video player"
-  frameBorder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  allowFullScreen
-  style={{ width: '100%', borderRadius: '0.5rem' }}
-></iframe>
-
-<br />
-
-<Tip>
-
-Mintlify supports [HTML tags in Markdown](https://www.markdownguide.org/basic-syntax/#html). This is helpful if you prefer HTML tags to Markdown syntax, and lets you create documentation with infinite flexibility.
-
-</Tip>
+## Embeds
 
 ### iFrames
 
-Loads another HTML page within the document. Most commonly used for embedding videos.
+Embed external content like YouTube videos:
 
 ```html
-<iframe src="https://www.youtube.com/embed/4KzFe50RQkQ"></iframe>
+<iframe
+  src="https://www.youtube.com/embed/4KzFe50RQkQ"
+  title="YouTube video"
+  width="560"
+  height="315"
+  allowFullScreen
+  style={{ width: '100%', borderRadius: '0.5rem' }}
+></iframe>
 ```
 
-### Best Practices
+<Tip>
+  Mintlify supports [HTML tags in Markdown](https://www.markdownguide.org/basic-syntax/#html), so you can embed anything that works in standard HTML.
+</Tip>
 
-- **Alt text**: Always include descriptive `alt` attributes for accessibility.
-- **File size**: Keep images under 5MB. Compress PNGs and use SVGs for logos and icons.
-- **File format**: Use SVG for vector graphics, PNG for screenshots, and JPG for photographs.
-- **Dark mode**: Provide both light and dark variants for hero images and diagrams.
+## Best Practices
+
+- **Alt text** — always include descriptive `alt` attributes for accessibility
+- **File size** — keep images under 5MB; compress PNGs and use SVGs for logos
+- **Format** — SVG for vectors, PNG for screenshots, JPG for photos
+- **Dark mode** — provide light/dark variants for hero images and diagrams with high contrast
