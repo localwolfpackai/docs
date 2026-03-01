@@ -43,6 +43,26 @@
         ]
       },
       {
+        "tab": "Claude Code",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "claude-code/overview",
+              "claude-code/agents"
+            ]
+          },
+          {
+            "group": "Using It Well",
+            "pages": [
+              "claude-code/skills",
+              "claude-code/workflows",
+              "claude-code/tips"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "API Reference",
         "groups": [
           {

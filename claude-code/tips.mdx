@@ -1,0 +1,177 @@
+---
+title: 'Tips, Gotchas & Troubleshooting'
+description: 'The stuff I wish someone had told me on day one. Common mistakes, real errors, and the fixes that actually work.'
+icon: 'triangle-exclamation'
+"og:image": "/images/hero-light.png"
+---
+
+Every tool has a learning curve. Claude Code's is shorter than most, but there are still things that will trip you up if nobody warns you. This page is that warning.
+
+## The biggest mistakes beginners make
+
+These come up constantly. If you're just getting started, read this section first.
+
+<AccordionGroup>
+  <Accordion title="Skipping the CLAUDE.md file" icon="file-circle-xmark">
+    This is the number one mistake. Without a CLAUDE.md, Claude has to guess your conventions, your project structure, your preferred tools. It's like onboarding a contractor with zero documentation and then being surprised when they do things differently than you expected.
+
+    **Fix:** Run `/init` right now. It takes 30 seconds and the improvement is immediate.
+  </Accordion>
+  <Accordion title="Giving vague prompts" icon="cloud">
+    "Make it better" or "fix the bugs" gives Claude almost nothing to work with. The more specific you are, the better the result.
+
+    **Fix:** Include file names, line numbers, error messages, and expected behavior. "The `/api/users` endpoint returns 500 when email is null. The validation in `src/api/users.ts` line 23 should catch this." That's a prompt Claude can actually work with.
+  </Accordion>
+  <Accordion title="Working in one giant session" icon="hourglass">
+    Long sessions degrade quality. As the context window fills up, Claude has less room to think. Responses get slower, less accurate, and more repetitive.
+
+    **Fix:** Use `/clear` between tasks. Use `/compact` during long tasks. Treat each task as its own session.
+  </Accordion>
+  <Accordion title="Not reviewing the code" icon="eye-slash">
+    Claude generates code fast. It's tempting to approve everything without reading. But AI-generated code is often "almost right," which can be worse than obviously wrong. A 2026 developer survey found that 66% of developers run into this "80% problem" regularly.
+
+    **Fix:** Read every diff. If you don't understand a change, ask Claude to explain it. If you still don't understand it, don't approve it.
+  </Accordion>
+  <Accordion title="Installing too many skills and MCP servers" icon="boxes-stacked">
+    Every skill and MCP server adds tokens to Claude's context. If you load 20,000+ tokens of MCP configurations, you've eaten into the space Claude needs for actual work.
+
+    **Fix:** Install only what you actively use. Remove anything you haven't used in a month. Less is more.
+  </Accordion>
+</AccordionGroup>
+
+## Common errors and how to fix them
+
+These are the errors I see most often. Organized by what you'll actually see on screen.
+
+### Permission denied / EACCES during install
+
+```text
+npm error EACCES: permission denied, mkdir '/usr/local/lib/node_modules'
+```
+
+This means npm can't write to the global directory. **Do not use `sudo`** to fix this. It creates a cascade of permission problems.
+
+<CardGroup cols={2}>
+  <Card title="Best fix" icon="check">
+    Use the native installer instead of npm: `curl -fsSL https://claude.ai/install.sh | bash`
+  </Card>
+  <Card title="Alternative fix" icon="wrench">
+    Fix npm permissions: `sudo chown -R $(whoami) ~/.npm` and set a user-level prefix in `.npmrc`
+  </Card>
+</CardGroup>
+
+### Auto-update fails with permission error
+
+Claude Code updates itself in the background. If it doesn't have write access to its installation directory, updates silently fail.
+
+**Fix:** Depends on how you installed:
+- **Native installer:** Should handle this automatically
+- **npm global:** Run `npm install -g @anthropic-ai/claude-code@latest` manually
+- **Homebrew:** Run `brew upgrade claude-code`
+
+### "Context window exceeded" or slow responses
+
+This isn't always an explicit error. Sometimes Claude just starts repeating itself, giving shorter answers, or missing obvious things.
+
+<Steps>
+  <Step title="Try /compact first">
+    This summarizes the conversation and reclaims space. Often enough to get back on track.
+  </Step>
+  <Step title="If that doesn't help, /clear">
+    Start a fresh session. Re-state what you're working on. This solves the problem every time.
+  </Step>
+  <Step title="For the future, scope tasks smaller">
+    If you regularly hit context limits, you're probably giving Claude too much in one session. Break work into smaller pieces.
+  </Step>
+</Steps>
+
+### "Sharp" module error on macOS
+
+```text
+Error: Could not load the "sharp" module using the darwin-arm64 runtime
+```
+
+This is a Node.js version issue, not a Claude Code issue.
+
+**Fix:**
+1. Uninstall Claude Code: `npm remove -g @anthropic-ai/claude-code`
+2. Upgrade Node.js to v18+ (v22 LTS recommended in 2026)
+3. Reinstall: `npm install -g @anthropic-ai/claude-code`
+
+### Claude ignores my CLAUDE.md instructions
+
+If Claude keeps doing something your CLAUDE.md explicitly says not to do, there are two likely causes:
+
+<CardGroup cols={2}>
+  <Card title="File is too long" icon="scroll">
+    If your CLAUDE.md is over 150 lines, Claude starts losing track of individual instructions. Trim it to 50-100 lines and use `@imports` for details.
+  </Card>
+  <Card title="Phrasing is too soft" icon="volume-low">
+    "Consider using TypeScript" is a suggestion. "IMPORTANT: Always use TypeScript with strict mode" is a rule. Add emphasis to critical instructions.
+  </Card>
+</CardGroup>
+
+## Tips from months of daily use
+
+These are the things that compound over time. None of them are obvious on day one.
+
+<AccordionGroup>
+  <Accordion title="Treat CLAUDE.md like code" icon="code">
+    Check it into git. Review it when things go wrong. Prune it regularly. When Claude does something unexpected, update the file. Over time, it becomes your project's most valuable documentation.
+  </Accordion>
+  <Accordion title="Use Plan Mode for unfamiliar codebases" icon="map">
+    If you're working in a codebase you didn't write, start in Plan Mode (`Shift+Tab` twice). Let Claude map the terrain before making changes. You'll understand the codebase faster and make fewer mistakes.
+  </Accordion>
+  <Accordion title="Delegate research to subagents" icon="users">
+    When you need Claude to look something up or explore a large codebase, it's doing that research in your main context window. Instead, ask Claude to "use a subagent to research this." The subagent works in its own context and reports back with just the answer.
+  </Accordion>
+  <Accordion title="Save patterns as custom commands" icon="bookmark">
+    If you type the same kind of prompt more than twice, turn it into a custom command in `.claude/commands/`. Future you will thank present you.
+  </Accordion>
+  <Accordion title="Use hooks for non-negotiable rules" icon="gavel">
+    CLAUDE.md instructions are advisory. Claude *usually* follows them. Hooks are deterministic. If code formatting must happen after every edit, don't put it in CLAUDE.md. Put it in a PostToolUse hook.
+  </Accordion>
+  <Accordion title="Run claude doctor when things are weird" icon="stethoscope">
+    `claude doctor` runs diagnostics on your installation. It checks versions, permissions, configurations, and known issues. If something isn't working and you don't know why, start here.
+  </Accordion>
+</AccordionGroup>
+
+## Security: the one thing you can't afford to get wrong
+
+<Warning>
+  **Never use `--dangerously-skip-permissions` on your real machine.** This flag disables all permission checks. In one documented incident (the "Wolak incident," October 2025), a developer's agent ran `rm -rf /` and attempted to delete everything on the machine. The flag exists for sandboxed CI/CD environments, not for daily use.
+</Warning>
+
+Other security basics:
+
+- **Review every Bash command** Claude wants to run. Especially anything with `rm`, `sudo`, or `curl | bash`.
+- **Don't commit `.env` files.** Claude knows not to, but always double-check.
+- **Use sandbox mode** on Linux and Mac. Released in early 2026, it restricts what the Bash tool can do.
+- **Keep your `.claude/settings.json` permissions tight.** Only pre-approve tools you fully trust.
+
+## System requirements (2026)
+
+| Requirement | Recommended |
+|-------------|-------------|
+| Node.js | v22 LTS (minimum v18) |
+| RAM | 16GB+ |
+| OS | macOS, Linux, Windows (with Git for Windows) |
+| Account | Claude Pro/Team subscription or Anthropic API key |
+
+<Info>
+  Claude Code works best on machines with 16GB+ RAM. If you're running heavy background applications alongside it, expect slower responses. Close what you don't need.
+</Info>
+
+## Where to get help
+
+<CardGroup cols={3}>
+  <Card title="Official Troubleshooting" icon="book" href="https://code.claude.com/docs/en/troubleshooting">
+    Anthropic's troubleshooting guide. Updated regularly with known issues and fixes.
+  </Card>
+  <Card title="GitHub Issues" icon="github" href="https://github.com/anthropics/claude-code/issues">
+    Report bugs, search for existing issues, and see what others are running into.
+  </Card>
+  <Card title="Community Resources" icon="users" href="https://github.com/hesreallyhim/awesome-claude-code">
+    Curated list of skills, hooks, and community tools for Claude Code.
+  </Card>
+</CardGroup>

@@ -1,0 +1,189 @@
+---
+title: 'Workflows'
+description: 'The actual patterns I use with Claude Code day to day. Coding, debugging, git, and shipping as a solo builder.'
+icon: 'arrows-spin'
+"og:image": "/images/hero-light.png"
+---
+
+Knowing what Claude Code *can* do is one thing. Knowing how to actually use it well is another. These are the workflows I've settled into after months of daily use. Some I learned from the docs. Most I learned from getting it wrong first.
+
+## The CLAUDE.md workflow
+
+Every project starts here. Before I write a single line of code with Claude, I make sure the project has a `CLAUDE.md` file. This is the single most impactful thing you can do.
+
+<Steps>
+  <Step title="Generate a starter">
+    Run `/init` in Claude Code. It scans your project and creates a CLAUDE.md with build commands, structure notes, and conventions it detects.
+  </Step>
+  <Step title="Refine it">
+    The generated file is a starting point. I add my preferences: code style rules, testing conventions, architecture decisions, and any "don't do this" rules I've learned the hard way.
+  </Step>
+  <Step title="Keep it lean">
+    Aim for 50 to 100 lines in the root file. If Claude keeps ignoring a rule, the file is probably too long and the instruction is getting lost.
+  </Step>
+  <Step title="Use imports for deep context">
+    CLAUDE.md supports `@path/to/file` imports. I keep the root file lean and link to detailed docs when Claude needs them.
+  </Step>
+</Steps>
+
+<Warning>
+  **This is the number one mistake I see:** people skip the CLAUDE.md and then wonder why Claude doesn't follow their conventions. Would you expect a new teammate to know your project's rules without documentation? Same principle.
+</Warning>
+
+## Coding workflow
+
+This is my daily loop for building features or working through tasks.
+
+<AccordionGroup>
+  <Accordion title="1. Start fresh" icon="rotate">
+    Every task gets a clean session. I run `/clear` between unrelated tasks. Leftover context from a previous task will confuse Claude on the next one. This took me too long to learn.
+  </Accordion>
+  <Accordion title="2. Plan before acting" icon="map">
+    For anything more than a small fix, I press `Shift+Tab` twice to enter Plan Mode. Claude analyzes the codebase and lays out what it would do, without actually doing it. I review the plan, adjust if needed, then approve.
+  </Accordion>
+  <Accordion title="3. Work in small pieces" icon="puzzle-piece">
+    Instead of "build the entire user dashboard," I say "create the layout component for the user dashboard." Smaller tasks get better results. Claude stays focused and I can catch issues early.
+  </Accordion>
+  <Accordion title="4. Review everything" icon="magnifying-glass">
+    Claude shows you every change before it's made. I actually read the diffs. Not just scanning. Reading. The 80% problem is real. AI-generated code is often almost right, and "almost right" can be worse than wrong if you don't catch it.
+  </Accordion>
+  <Accordion title="5. Commit often" icon="code-commit">
+    Small, frequent commits using `/commit`. If something goes wrong, I can roll back to a known good state. Claude writes decent commit messages, but I always review them.
+  </Accordion>
+</AccordionGroup>
+
+## Debugging workflow
+
+When something breaks, Claude Code is often faster at diagnosing the issue than I am. Here's how I approach it:
+
+```text What I type in Claude Code
+This test is failing: [paste the error]
+Can you figure out why and fix it?
+```
+
+Claude will read the test file, trace the logic, identify the problem, and propose a fix. If the fix doesn't work, it adjusts. The agent loop handles the back-and-forth automatically.
+
+<Tip>
+  **Be specific with errors.** Don't just say "it's broken." Paste the exact error message. The more concrete information Claude has, the faster it finds the root cause. "The /api/users endpoint returns 500 when the email field is empty" is much better than "the API doesn't work."
+</Tip>
+
+<CardGroup cols={2}>
+  <Card title="Good debugging prompt" icon="check">
+    "The test in auth.test.ts on line 42 expects a 200 but gets a 401. The user should be authenticated at that point. Can you trace the auth middleware and find where the token check fails?"
+  </Card>
+  <Card title="Less useful prompt" icon="xmark">
+    "The tests are failing. Fix them."
+  </Card>
+</CardGroup>
+
+## Git workflow
+
+This is where Claude Code saves me the most time. Git operations that used to involve looking up flags and syntax are now just natural language.
+
+| What I want | What I type |
+|-------------|-------------|
+| Stage and commit | `/commit` |
+| Create a feature branch | "create a branch called feature/dark-mode" |
+| Review changes before pushing | "show me a summary of everything that changed" |
+| Write a PR description | "create a pull request with a good description" |
+| Resolve merge conflicts | "help me resolve these merge conflicts" |
+| Undo the last commit (safely) | "undo the last commit but keep the changes" |
+
+<Warning>
+  Claude will never force-push or do destructive git operations without asking first. But you should still understand what you're approving. If Claude suggests `git reset --hard`, make sure you know what that means before you say yes.
+</Warning>
+
+## PR review workflow
+
+When I open a PR (or someone else does), I use Claude to review it:
+
+```text
+/review-pr 42
+```
+
+Claude pulls up the PR, reads the diff, and gives feedback on code quality, potential bugs, missing tests, and style issues. It's not a replacement for human review, but it catches things I'd miss on a tired Friday.
+
+## Context management
+
+This is the skill that separates productive Claude Code users from frustrated ones. The context window is finite. When it fills up, responses get slower and less accurate. Managing it well is essential.
+
+<CardGroup cols={2}>
+  <Card title="/clear" icon="eraser">
+    Wipe the session. Use between unrelated tasks. There's no penalty for starting fresh. Do it often.
+  </Card>
+  <Card title="/compact" icon="compress">
+    Summarize the current session to free up space. Good when you're mid-task but the conversation is getting long.
+  </Card>
+  <Card title="Subagents" icon="users">
+    Delegate research to subagents. They do the heavy lifting in their own context and report back with just the results.
+  </Card>
+  <Card title="Focused prompts" icon="crosshairs">
+    Narrow your requests. "Fix the login form validation" is better than "review the whole auth system."
+  </Card>
+</CardGroup>
+
+<Info>
+  **Rule of thumb:** if you've been in the same session for more than 20 minutes, use `/compact`. If you've corrected Claude more than twice on the same issue, use `/clear` and start fresh. Stale context causes more problems than starting over.
+</Info>
+
+## Hooks: automating the boring stuff
+
+Hooks let you run scripts automatically at specific points in Claude's workflow. They're not optional prompts. They're deterministic actions that always happen.
+
+| Hook | When it runs | Example use |
+|------|-------------|-------------|
+| `PreToolUse` | Before Claude uses a tool | Block dangerous commands, enforce sandboxing |
+| `PostToolUse` | After a tool completes | Auto-format code after every edit, run linter |
+| `Stop` | When Claude finishes a response | Run a final check before the turn ends |
+| `SessionStart` | When a new session begins | Load project-specific context |
+
+Here's a practical example. Say you want Prettier to run automatically every time Claude edits a file:
+
+```json .claude/settings.json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx prettier --write $TOOL_INPUT_FILE_PATH"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Now every time Claude writes or edits a file, Prettier formats it automatically. No extra prompts, no forgotten formatting.
+
+<Tip>
+  **Start with one hook.** The PostToolUse formatter is the best first hook because the feedback is immediate and visible. Once that works, expand from there.
+</Tip>
+
+## My recommended daily flow
+
+If you take nothing else from this page, here's the routine:
+
+<Steps>
+  <Step title="Open Claude Code in the project directory">
+    Make sure your CLAUDE.md is up to date.
+  </Step>
+  <Step title="Start with /clear">
+    Fresh context for every work session.
+  </Step>
+  <Step title="Plan first, act second">
+    Use Plan Mode for anything beyond a quick fix.
+  </Step>
+  <Step title="Work in small, focused tasks">
+    One feature, one fix, one file at a time.
+  </Step>
+  <Step title="Commit with /commit after each meaningful change">
+    Small commits, good messages.
+  </Step>
+  <Step title="Use /compact when things slow down">
+    Keep the context lean.
+  </Step>
+</Steps>

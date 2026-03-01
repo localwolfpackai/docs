@@ -1,0 +1,148 @@
+---
+title: 'What Is Claude Code?'
+description: 'An honest intro to the AI coding tool I use every day, written for people who are still figuring out what AI tools actually do.'
+icon: 'terminal'
+"og:image": "/images/hero-light.png"
+---
+
+You've probably heard people talk about "AI coding assistants" and wondered whether they're actually useful or just hype. I had the same question. Claude Code is the tool that changed my answer.
+
+## The short version
+
+Claude Code is an AI-powered coding tool made by [Anthropic](https://www.anthropic.com) that runs in your terminal. You describe what you want in plain English, and it reads your files, writes code, runs commands, and manages your project. It's not autocomplete. It's closer to having a collaborator who can see your whole codebase and actually do things with it.
+
+<Info>
+  You don't need to be a developer to understand this page. If you're learning to code, exploring AI tools, or just curious about how this stuff works, you're in the right place.
+</Info>
+
+## Why I use it
+
+I'm a solo builder. I don't have a team to review my code or pair program with. Claude Code fills that gap in a way that surprised me.
+
+<CardGroup cols={2}>
+  <Card title="It reads your project" icon="folder-open">
+    Point it at a codebase and it understands the structure, the patterns, and the dependencies. No setup file needed.
+  </Card>
+  <Card title="It writes real code" icon="code">
+    Not just suggestions in a sidebar. It creates files, edits existing ones, and runs tests. You review and approve.
+  </Card>
+  <Card title="It handles git" icon="code-branch">
+    Commits, branches, pull requests. You can ask it to "commit what I just did with a good message" and it does.
+  </Card>
+  <Card title="It explains things" icon="lightbulb">
+    Confused by a function? Ask. It'll walk you through the code in plain language. Great for learning.
+  </Card>
+</CardGroup>
+
+## How it actually works
+
+When you open Claude Code in your terminal, here's what happens behind the scenes:
+
+<Steps>
+  <Step title="You type what you want">
+    Something like "add a dark mode toggle to the settings page" or "why is this test failing?"
+  </Step>
+  <Step title="Claude reads your codebase">
+    It scans your files, understands the structure, and figures out what's relevant to your request.
+  </Step>
+  <Step title="It makes a plan">
+    Before changing anything, Claude thinks through what needs to happen. You can even use Plan Mode to review the plan before it acts.
+  </Step>
+  <Step title="It takes action">
+    Edits files, runs commands, creates new files. Each action asks for your permission first (unless you configure it otherwise).
+  </Step>
+  <Step title="You review and approve">
+    Nothing ships without you saying so. You're always in control of what gets committed and pushed.
+  </Step>
+</Steps>
+
+## Getting started
+
+You'll need [Node.js](https://nodejs.org) (version 18 or higher) and either an Anthropic API key or a Claude subscription.
+
+<CodeGroup>
+
+```bash Install with npm
+npm install -g @anthropic-ai/claude-code
+```
+
+```bash Install with the native installer
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+```bash Install with Homebrew
+brew install claude-code
+```
+
+</CodeGroup>
+
+Once installed, navigate to any project folder and run:
+
+```bash
+claude
+```
+
+That's it. You're in. Type what you need and Claude takes it from there.
+
+<Warning>
+  **Don't use `sudo` to install.** If you get a permission error during install, use the native installer (the `curl` command above) instead. Running npm with `sudo` causes problems down the line.
+</Warning>
+
+## What you'll need to know about
+
+As you get comfortable, these are the concepts worth understanding:
+
+<CardGroup cols={2}>
+  <Card title="Agents" icon="robot" href="/claude-code/agents">
+    How Claude thinks, plans, and delegates tasks. The core of how it works.
+  </Card>
+  <Card title="Skills" icon="bolt" href="/claude-code/skills">
+    Reusable commands and knowledge packs that extend what Claude can do.
+  </Card>
+  <Card title="Workflows" icon="arrows-spin" href="/claude-code/workflows">
+    The day-to-day patterns I've built for coding, debugging, and shipping.
+  </Card>
+  <Card title="Tips & Gotchas" icon="triangle-exclamation" href="/claude-code/tips">
+    The stuff I wish I knew on day one. Common mistakes, real fixes.
+  </Card>
+</CardGroup>
+
+## The CLAUDE.md file
+
+This is one of those things that seems small but matters a lot. Every project can have a `CLAUDE.md` file at the root. It's like a briefing document that Claude reads at the start of every session. You put your preferences in there: how you like your code formatted, which tools to use, what the project structure looks like.
+
+```markdown CLAUDE.md
+# Project conventions
+- Use TypeScript with strict mode
+- Tests go in __tests__ directories
+- Run `npm test` before committing
+
+# Architecture
+- State management: Zustand
+- Styling: Tailwind CSS
+- API calls go through src/api/
+```
+
+<Tip>
+  Run `/init` inside Claude Code to generate a starter CLAUDE.md based on your current project. It gives you a solid starting point that you can refine over time.
+</Tip>
+
+## Is it free?
+
+Claude Code requires either a [Claude Pro/Team subscription](https://claude.ai) or an [Anthropic API key](https://console.anthropic.com). With the API, you pay based on usage (tokens in and out). With a subscription, usage is included up to your plan limits.
+
+The API route gives you more control over costs. The subscription route is simpler if you just want to use it without thinking about billing.
+
+## Where to learn more
+
+<CardGroup cols={3}>
+  <Card title="Official Docs" icon="book" href="https://code.claude.com/docs/en/overview">
+    Anthropic's full documentation for Claude Code.
+  </Card>
+  <Card title="Agent SDK" icon="cube" href="https://docs.claude.com/en/api/agent-sdk/overview">
+    Build your own agents using Claude Code as a library.
+  </Card>
+  <Card title="Community" icon="users" href="https://github.com/anthropics/claude-code">
+    The official GitHub repo. Issues, discussions, and changelogs.
+  </Card>
+</CardGroup>
