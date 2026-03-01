@@ -1,8 +1,8 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Plant Store API",
-    "description": "A RESTful API for managing a plant store inventory. Supports creating, listing, and deleting plants with webhook notifications for new additions.",
+    "title": "Tasks API",
+    "description": "A simple task management API for agent-driven workflows. Create, list, and manage tasks programmatically.",
     "license": {
       "name": "MIT"
     },
@@ -10,8 +10,8 @@
   },
   "servers": [
     {
-      "url": "https://sandbox.mintlify.com",
-      "description": "Sandbox environment"
+      "url": "https://api.example.com",
+      "description": "Production"
     }
   ],
   "security": [
@@ -20,16 +20,16 @@
     }
   ],
   "paths": {
-    "/plants": {
+    "/tasks": {
       "get": {
-        "summary": "List all plants",
-        "description": "Returns all plants from the system that the user has access to. Results can be limited using the `limit` query parameter.",
-        "operationId": "listPlants",
+        "summary": "List all tasks",
+        "description": "Returns all tasks the authenticated user has access to. Use the `limit` query parameter to control the number of results.",
+        "operationId": "listTasks",
         "parameters": [
           {
             "name": "limit",
             "in": "query",
-            "description": "The maximum number of results to return. If omitted, all plants are returned.",
+            "description": "Maximum number of results to return.",
             "required": false,
             "schema": {
               "type": "integer",
@@ -37,36 +37,48 @@
               "minimum": 1,
               "maximum": 100
             }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by task status.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["pending", "in_progress", "completed"]
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "A list of plants",
+            "description": "A list of tasks",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/PlantWithId"
+                    "$ref": "#/components/schemas/TaskWithId"
                   }
                 },
                 "example": [
                   {
                     "id": 1,
-                    "name": "Snake Plant",
-                    "tag": "indoor"
+                    "title": "Set up MCP filesystem server",
+                    "status": "completed",
+                    "priority": "high"
                   },
                   {
                     "id": 2,
-                    "name": "Monstera Deliciosa",
-                    "tag": "tropical"
+                    "title": "Write OpenAPI spec for webhook handler",
+                    "status": "in_progress",
+                    "priority": "medium"
                   }
                 ]
               }
             }
           },
           "400": {
-            "description": "Unexpected error",
+            "description": "Invalid request",
             "content": {
               "application/json": {
                 "schema": {
@@ -74,7 +86,7 @@
                 },
                 "example": {
                   "error": 400,
-                  "message": "Invalid limit parameter"
+                  "message": "Invalid status filter"
                 }
               }
             }
@@ -82,42 +94,43 @@
         }
       },
       "post": {
-        "summary": "Create a new plant",
-        "description": "Creates a new plant in the store. The server assigns a unique ID to the plant on creation.",
-        "operationId": "createPlant",
+        "summary": "Create a new task",
+        "description": "Creates a new task. The server assigns a unique ID and sets the initial status to `pending`.",
+        "operationId": "createTask",
         "requestBody": {
-          "description": "Plant object to add to the store",
+          "description": "Task object to create",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Plant"
+                "$ref": "#/components/schemas/Task"
               },
               "example": {
-                "name": "Fiddle Leaf Fig",
-                "tag": "indoor"
+                "title": "Deploy docs site update",
+                "priority": "high"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "The newly created plant with its assigned ID",
+            "description": "The newly created task",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PlantWithId"
+                  "$ref": "#/components/schemas/TaskWithId"
                 },
                 "example": {
-                  "id": 12,
-                  "name": "Fiddle Leaf Fig",
-                  "tag": "indoor"
+                  "id": 3,
+                  "title": "Deploy docs site update",
+                  "status": "pending",
+                  "priority": "high"
                 }
               }
             }
           },
           "400": {
-            "description": "Unexpected error",
+            "description": "Invalid request",
             "content": {
               "application/json": {
                 "schema": {
@@ -125,7 +138,7 @@
                 },
                 "example": {
                   "error": 400,
-                  "message": "Name field is required"
+                  "message": "Title field is required"
                 }
               }
             }
@@ -133,16 +146,16 @@
         }
       }
     },
-    "/plants/{id}": {
+    "/tasks/{id}": {
       "delete": {
-        "summary": "Delete a plant",
-        "description": "Permanently deletes a single plant based on the ID supplied. This action cannot be undone.",
-        "operationId": "deletePlant",
+        "summary": "Delete a task",
+        "description": "Permanently deletes a task by ID. This action cannot be undone.",
+        "operationId": "deleteTask",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "ID of the plant to delete",
+            "description": "ID of the task to delete",
             "required": true,
             "schema": {
               "type": "integer",
@@ -152,10 +165,10 @@
         ],
         "responses": {
           "204": {
-            "description": "Plant successfully deleted"
+            "description": "Task successfully deleted"
           },
           "400": {
-            "description": "Unexpected error",
+            "description": "Invalid request",
             "content": {
               "application/json": {
                 "schema": {
@@ -163,7 +176,7 @@
                 },
                 "example": {
                   "error": 400,
-                  "message": "Plant with the specified ID was not found"
+                  "message": "Task with the specified ID was not found"
                 }
               }
             }
@@ -173,29 +186,30 @@
     }
   },
   "webhooks": {
-    "/plant/webhook": {
+    "/tasks/webhook": {
       "post": {
-        "summary": "New plant notification",
-        "description": "Sent when a new plant is added to the store. Your endpoint should return a 200 status code to acknowledge receipt.",
-        "operationId": "newPlantWebhook",
+        "summary": "Task created notification",
+        "description": "Sent when a new task is created. Your endpoint should return a 200 status code to acknowledge receipt.",
+        "operationId": "taskCreatedWebhook",
         "requestBody": {
-          "description": "The plant that was added to the store",
+          "description": "The task that was created",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PlantWithId"
+                "$ref": "#/components/schemas/TaskWithId"
               },
               "example": {
-                "id": 12,
-                "name": "Fiddle Leaf Fig",
-                "tag": "indoor"
+                "id": 3,
+                "title": "Deploy docs site update",
+                "status": "pending",
+                "priority": "high"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
+            "description": "Return 200 to acknowledge receipt"
           }
         }
       }
@@ -203,34 +217,36 @@
   },
   "components": {
     "schemas": {
-      "Plant": {
+      "Task": {
         "required": [
-          "name"
+          "title"
         ],
         "type": "object",
-        "description": "A plant object used for creating new entries",
+        "description": "A task object for creating new entries",
         "properties": {
-          "name": {
-            "description": "The name of the plant",
+          "title": {
+            "description": "What needs to be done",
             "type": "string",
-            "example": "Snake Plant"
+            "example": "Set up MCP filesystem server"
           },
-          "tag": {
-            "description": "Tag to categorize the plant type (e.g., indoor, outdoor, tropical)",
+          "priority": {
+            "description": "Task priority level",
             "type": "string",
-            "example": "indoor"
+            "enum": ["low", "medium", "high"],
+            "example": "high"
           }
         }
       },
-      "PlantWithId": {
+      "TaskWithId": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/Plant"
+            "$ref": "#/components/schemas/Task"
           },
           {
             "type": "object",
             "required": [
-              "id"
+              "id",
+              "status"
             ],
             "properties": {
               "id": {
@@ -238,11 +254,17 @@
                 "type": "integer",
                 "format": "int64",
                 "example": 1
+              },
+              "status": {
+                "description": "Current task status",
+                "type": "string",
+                "enum": ["pending", "in_progress", "completed"],
+                "example": "pending"
               }
             }
           }
         ],
-        "description": "A plant object returned from the API, including its server-assigned ID"
+        "description": "A task object returned from the API, including server-assigned ID and status"
       },
       "Error": {
         "required": [
@@ -253,7 +275,7 @@
         "description": "Error response returned when a request fails",
         "properties": {
           "error": {
-            "description": "HTTP status code of the error",
+            "description": "HTTP status code",
             "type": "integer",
             "format": "int32",
             "example": 400

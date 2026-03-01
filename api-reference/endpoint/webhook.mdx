@@ -1,27 +1,28 @@
 ---
-title: 'New Plant Webhook'
-openapi: 'WEBHOOK /plant/webhook'
-description: 'Receive notifications when a new plant is added to the store'
+title: 'Task Created Webhook'
+openapi: 'WEBHOOK /tasks/webhook'
+description: 'Receive notifications when a new task is created'
 icon: 'bell'
 ---
 
 <Info>
-  Webhooks are HTTP callbacks that notify your application when specific events occur. The plant webhook fires whenever a new plant is created in the store.
+  Webhooks are HTTP callbacks that notify your application when events occur. This webhook fires whenever a new task is created.
 </Info>
 
 ## Usage Notes
 
-- Your endpoint must return a `200` status code to acknowledge receipt. If the webhook does not receive a `200` response, it may retry the delivery.
-- The request body contains the full plant object including its `id`, `name`, and optional `tag`.
-- Webhook payloads are sent as `POST` requests with a `Content-Type: application/json` header.
+- Your endpoint must return a `200` status code to acknowledge receipt. If the webhook doesn't receive a `200`, it may retry.
+- The request body contains the full task object including `id`, `title`, `status`, and optional `priority`.
+- Payloads are sent as `POST` requests with `Content-Type: application/json`.
 
 ### Example Payload
 
 ```json
 {
-  "id": 12,
-  "name": "Fiddle Leaf Fig",
-  "tag": "indoor"
+  "id": 3,
+  "title": "Deploy docs site update",
+  "status": "pending",
+  "priority": "high"
 }
 ```
 
@@ -34,10 +35,10 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route("/webhook/plant", methods=["POST"])
-def handle_plant_webhook():
-    plant = request.get_json()
-    print(f"New plant added: {plant['name']}")
+@app.route("/webhook/task", methods=["POST"])
+def handle_task_webhook():
+    task = request.get_json()
+    print(f"New task created: {task['title']}")
     return jsonify({"status": "received"}), 200
 ```
 
@@ -47,9 +48,9 @@ const app = express();
 
 app.use(express.json());
 
-app.post("/webhook/plant", (req, res) => {
-  const plant = req.body;
-  console.log(`New plant added: ${plant.name}`);
+app.post("/webhook/task", (req, res) => {
+  const task = req.body;
+  console.log(`New task created: ${task.title}`);
   res.status(200).json({ status: "received" });
 });
 ```

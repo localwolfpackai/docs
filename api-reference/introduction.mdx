@@ -1,14 +1,16 @@
 ---
 title: 'API Reference'
-description: 'How I set up API documentation with OpenAPI and Mintlify'
+description: 'How I document APIs using OpenAPI specs and Mintlify'
 icon: 'book'
 ---
 
-This is a working example of API docs auto-generated from an OpenAPI spec. I use it as a template for any project that needs API documentation.
+This section is a **working template** for API documentation. I use it as a starting point whenever I need to document an API — whether it's a personal project, a webhook handler, or a microservice.
 
-## How it works
+The example below documents a simple **Tasks API** — a pattern I use for agent-driven workflows where tasks are created, tracked, and completed programmatically.
 
-Mintlify can generate interactive API docs from an [OpenAPI spec](https://mintlify.com/docs/api-playground/openapi/setup). You write the spec, create thin MDX wrappers for each endpoint, and the framework handles the rest — request/response schemas, auth headers, try-it-out playground.
+## How It Works
+
+Mintlify generates interactive API docs from an [OpenAPI spec](https://mintlify.com/docs/api-playground/openapi/setup). You write the spec, create thin MDX wrappers for each endpoint, and the framework handles the rest — request/response schemas, auth headers, and the try-it-out playground.
 
 <CardGroup cols={2}>
   <Card
@@ -16,11 +18,11 @@ Mintlify can generate interactive API docs from an [OpenAPI spec](https://mintli
     icon="lock"
     href="/api-reference/authentication"
   >
-    How Bearer token auth is set up in the spec.
+    How Bearer token auth works in the spec.
   </Card>
   <Card
     title="OpenAPI Spec"
-    icon="leaf"
+    icon="file-code"
     href="https://github.com/localwolfpackai/docs/blob/main/api-reference/openapi.json"
   >
     The raw spec file on GitHub.
@@ -30,22 +32,22 @@ Mintlify can generate interactive API docs from an [OpenAPI spec](https://mintli
 ## Base URL
 
 ```
-https://sandbox.mintlify.com
+https://api.example.com
 ```
 
 ## Endpoints
 
 | Method | Path | What it does |
 |--------|------|-------------|
-| `GET` | `/plants` | List all plants |
-| `POST` | `/plants` | Create a new plant |
-| `DELETE` | `/plants/{id}` | Delete a plant by ID |
+| `GET` | `/tasks` | List all tasks |
+| `POST` | `/tasks` | Create a new task |
+| `DELETE` | `/tasks/{id}` | Delete a task by ID |
 
 ## Webhooks
 
 | Event | Path | What it does |
 |-------|------|-------------|
-| New Plant | `/plant/webhook` | Fires when a plant is created |
+| Task Created | `/tasks/webhook` | Fires when a new task is created |
 
 ## Auth
 
@@ -61,3 +63,7 @@ All errors return JSON with `error` (status code) and `message`:
   "message": "What went wrong"
 }
 ```
+
+<Info>
+  This is a template API. When you have a real API to document, swap out the OpenAPI spec and update the endpoint pages. The structure stays the same.
+</Info>

@@ -1,58 +1,114 @@
 ---
-title: 'Components & Agent Skills'
-description: 'MDX components I use and the AI agent tools in my workflow'
+title: 'Agent Tools & Components'
+description: 'MCP servers, agent skills, and the MDX components I use to build this site'
 icon: 'bolt'
 ---
 
-This page covers two things: the built-in MDX components I use on this site, and the AI agent tools and skills that are part of my daily workflow.
+## MCP Servers
 
-## AI Agent Tools I Use
+Model Context Protocol servers give agents access to external tools and data. They're the bridge between the agent and the real world.
 
-These are the tools I actually run. Not a wishlist — these are installed and configured.
+### How MCP Works
 
-### Claude Code
+An MCP server exposes **tools** (actions the agent can call), **resources** (data the agent can read), and **prompts** (reusable templates). The agent discovers what's available and decides when to use them.
 
-My primary coding agent. I use it for everything from writing code to managing git workflows.
+```json claude_desktop_config.json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/dir"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_TOKEN": "ghp_..." }
+    }
+  }
+}
+```
 
-```bash
-# install skills for Claude Code
-npx skills add claude-code
+### Servers I Run
 
-# or browse what's available
-npx skills search
+| Server | What it does | When I use it |
+|--------|-------------|---------------|
+| **Filesystem** | Read/write/search files on disk | Always on — core agent capability |
+| **GitHub** | Create PRs, manage issues, search repos | Shipping code, reviewing PRs |
+| **Fetch** | Make HTTP requests from agent context | Checking APIs, pulling docs |
+| **Memory** | Persist knowledge across sessions | Long-running projects |
+
+### Writing a Custom MCP Server
+
+If you need something not covered by the official servers, you can write your own. The protocol is straightforward:
+
+```typescript server.ts
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { z } from "zod";
+
+const server = new McpServer({
+  name: "my-server",
+  version: "1.0.0",
+});
+
+server.tool(
+  "get_weather",
+  "Get current weather for a city",
+  { city: z.string() },
+  async ({ city }) => {
+    const data = await fetchWeather(city);
+    return { content: [{ type: "text", text: JSON.stringify(data) }] };
+  }
+);
+
+const transport = new StdioServerTransport();
+await server.connect(transport);
 ```
 
 <Tip>
-  Check out [skills.sh](https://skills.sh) for the full directory of agent skills. It's like a package manager for AI agent knowledge.
+  Start with the official MCP servers and only build custom ones when you have a specific need. Most common use cases are already covered.
 </Tip>
 
-### MCP Servers
+## Skills.sh
 
-Model Context Protocol servers give agents access to external tools. The ones I use most:
+[Skills.sh](https://skills.sh) is a package manager for agent knowledge. Instead of writing the same `CLAUDE.md` instructions for every project, you install skills that inject context automatically.
 
-- **Filesystem** — lets the agent read/write files on disk
-- **GitHub** — PR creation, issue management, repo search
-- **Fetch** — HTTP requests from within agent context
-- **Memory** — persistent context across sessions
+```bash
+# add a skill to your project
+npx skills add claude-code
 
-### Agent Workflow
+# see what's available
+npx skills search "react"
 
-My typical flow:
+# list what you have installed
+npx skills list
+```
 
-1. Open Claude Code in the project directory
-2. Describe what I want to build or fix
-3. The agent reads the codebase, makes changes, runs tests
-4. I review and push
+### How Skills Work
 
-<Warning>
-  Always review agent-generated code before pushing. Agents are fast but not infallible.
-</Warning>
+A skill is a markdown file that gets injected into the agent's context. It can contain:
+
+- Coding conventions and patterns
+- Framework-specific knowledge
+- Testing strategies
+- Common pitfalls and fixes
+
+Think of it as community-maintained `CLAUDE.md` fragments that you compose together.
+
+### Making Your Own Skill
+
+If you have project-specific patterns you reuse across repos, you can publish them as a skill:
+
+```bash
+npx skills create my-pattern
+npx skills publish
+```
 
 ---
 
 ## MDX Components
 
-These are the Mintlify components I use to build pages on this site.
+These are the Mintlify components I use to build pages on this site. Quick reference for when I forget the syntax.
 
 ### Callouts
 
@@ -98,7 +154,7 @@ These are the Mintlify components I use to build pages on this site.
     Syntax reference.
   </Card>
   <Card title="Code Blocks" icon="code" href="/essentials/code">
-    Syntax highlighting and tabs.
+    Syntax highlighting and Claude Code.
   </Card>
 </CardGroup>
 
@@ -139,7 +195,7 @@ echo "hello from the shell"
 
 ### Icons
 
-All icons come from [Font Awesome](https://fontawesome.com/search). Just pass the name as a string.
+All icons come from [Font Awesome](https://fontawesome.com/search). Pass the name as a string.
 
 ```mdx
 <Card title="Settings" icon="gear" href="/essentials/settings">

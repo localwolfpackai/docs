@@ -1,0 +1,228 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 380" width="960" height="380">
+  <defs>
+    <!-- Subtle grid pattern -->
+    <pattern id="grid-light" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#E2E8F0" stroke-width="0.5" opacity="0.6"/>
+    </pattern>
+
+    <!-- Gradient for the main terminal window -->
+    <linearGradient id="terminal-bg-light" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F1F5F9"/>
+      <stop offset="100%" stop-color="#E2E8F0"/>
+    </linearGradient>
+
+    <!-- Gradient for the terminal title bar -->
+    <linearGradient id="titlebar-light" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#E2E8F0"/>
+      <stop offset="100%" stop-color="#CBD5E1"/>
+    </linearGradient>
+
+    <!-- Glow for accent elements -->
+    <filter id="glow-light" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Soft shadow for cards -->
+    <filter id="shadow-light" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#475569" flood-opacity="0.08"/>
+    </filter>
+
+    <!-- Larger soft shadow -->
+    <filter id="shadow-lg-light" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#475569" flood-opacity="0.1"/>
+    </filter>
+
+    <!-- Dot pattern for background texture -->
+    <pattern id="dots-light" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="0.6" fill="#94A3B8" opacity="0.2"/>
+    </pattern>
+
+    <!-- Connection line gradient -->
+    <linearGradient id="conn-grad-light" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#94A3B8" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#64748B" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#94A3B8" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Node pulse gradient -->
+    <radialGradient id="node-glow-light" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#64748B" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#64748B" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="960" height="380" fill="#F8FAFC"/>
+
+  <!-- Dot pattern overlay -->
+  <rect width="960" height="380" fill="url(#dots-light)"/>
+
+  <!-- Subtle grid in center area -->
+  <rect x="80" y="40" width="800" height="300" fill="url(#grid-light)" opacity="0.5" rx="4"/>
+
+  <!-- === LEFT SECTION: Abstract terminal window === -->
+  <g transform="translate(100, 60)" filter="url(#shadow-lg-light)">
+    <!-- Terminal window body -->
+    <rect width="320" height="220" rx="8" ry="8" fill="white"/>
+
+    <!-- Title bar -->
+    <rect width="320" height="32" rx="8" ry="8" fill="url(#titlebar-light)"/>
+    <rect y="24" width="320" height="8" fill="url(#titlebar-light)"/>
+
+    <!-- Window controls -->
+    <circle cx="16" cy="16" r="5" fill="#FDA4AF" opacity="0.7"/>
+    <circle cx="34" cy="16" r="5" fill="#FDE68A" opacity="0.7"/>
+    <circle cx="52" cy="16" r="5" fill="#86EFAC" opacity="0.7"/>
+
+    <!-- Terminal content: code lines -->
+    <g transform="translate(16, 46)" font-family="'SF Mono', 'Fira Code', 'Cascadia Code', monospace" font-size="11">
+      <!-- Prompt line 1 -->
+      <text fill="#64748B" opacity="0.5">
+        <tspan>$</tspan>
+      </text>
+      <rect x="14" y="-8" width="80" height="12" rx="2" fill="#64748B" opacity="0.12"/>
+
+      <!-- Prompt line 2 -->
+      <text y="20" fill="#64748B" opacity="0.5">
+        <tspan>$</tspan>
+      </text>
+      <rect x="14" y="12" width="140" height="12" rx="2" fill="#64748B" opacity="0.09"/>
+
+      <!-- Output block -->
+      <rect x="4" y="36" width="200" height="12" rx="2" fill="#94A3B8" opacity="0.08"/>
+      <rect x="4" y="52" width="160" height="12" rx="2" fill="#94A3B8" opacity="0.06"/>
+      <rect x="4" y="68" width="180" height="12" rx="2" fill="#94A3B8" opacity="0.08"/>
+
+      <!-- Prompt line 3 with cursor -->
+      <text y="100" fill="#64748B" opacity="0.5">
+        <tspan>$</tspan>
+      </text>
+      <rect x="14" y="92" width="110" height="12" rx="2" fill="#64748B" opacity="0.12"/>
+
+      <!-- Blinking cursor -->
+      <rect x="130" y="91" width="2" height="14" fill="#64748B" opacity="0.6">
+        <animate attributeName="opacity" values="0.6;0.1;0.6" dur="1.5s" repeatCount="indefinite"/>
+      </rect>
+
+      <!-- Status line -->
+      <rect x="0" y="124" width="288" height="1" fill="#E2E8F0"/>
+      <rect x="4" y="132" width="60" height="10" rx="2" fill="#86EFAC" opacity="0.3"/>
+      <rect x="70" y="132" width="40" height="10" rx="2" fill="#94A3B8" opacity="0.1"/>
+      <rect x="116" y="132" width="50" height="10" rx="2" fill="#94A3B8" opacity="0.1"/>
+    </g>
+  </g>
+
+  <!-- === CENTER SECTION: Agent workflow / connection nodes === -->
+  <g transform="translate(460, 100)">
+    <!-- Connection lines between nodes -->
+    <line x1="0" y1="90" x2="60" y2="40" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.3"/>
+    <line x1="0" y1="90" x2="60" y2="140" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.3"/>
+    <line x1="60" y1="40" x2="140" y2="90" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.3"/>
+    <line x1="60" y1="140" x2="140" y2="90" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.3"/>
+
+    <!-- Animated data flow dots on connections -->
+    <circle r="2.5" fill="#64748B" opacity="0.5">
+      <animateMotion dur="3s" repeatCount="indefinite" path="M0,90 L60,40"/>
+    </circle>
+    <circle r="2.5" fill="#64748B" opacity="0.5">
+      <animateMotion dur="3.5s" repeatCount="indefinite" path="M60,40 L140,90"/>
+    </circle>
+    <circle r="2.5" fill="#64748B" opacity="0.5">
+      <animateMotion dur="4s" repeatCount="indefinite" path="M60,140 L140,90"/>
+    </circle>
+
+    <!-- Input node (left) -->
+    <circle cx="0" cy="90" r="20" fill="url(#node-glow-light)"/>
+    <circle cx="0" cy="90" r="8" fill="white" stroke="#64748B" stroke-width="1.5" filter="url(#shadow-light)"/>
+    <rect x="-4" y="86" width="8" height="8" rx="1.5" fill="#64748B" opacity="0.5"/>
+
+    <!-- Top processing node -->
+    <circle cx="60" cy="40" r="24" fill="url(#node-glow-light)"/>
+    <circle cx="60" cy="40" r="10" fill="white" stroke="#475569" stroke-width="1.5" filter="url(#shadow-light)"/>
+    <!-- Gear icon abstraction -->
+    <circle cx="60" cy="40" r="4" fill="none" stroke="#475569" stroke-width="1.2"/>
+    <line x1="60" y1="33" x2="60" y2="35" stroke="#475569" stroke-width="1.2"/>
+    <line x1="60" y1="45" x2="60" y2="47" stroke="#475569" stroke-width="1.2"/>
+    <line x1="53" y1="40" x2="55" y2="40" stroke="#475569" stroke-width="1.2"/>
+    <line x1="65" y1="40" x2="67" y2="40" stroke="#475569" stroke-width="1.2"/>
+
+    <!-- Bottom processing node -->
+    <circle cx="60" cy="140" r="24" fill="url(#node-glow-light)"/>
+    <circle cx="60" cy="140" r="10" fill="white" stroke="#475569" stroke-width="1.5" filter="url(#shadow-light)"/>
+    <!-- Bolt/lightning abstraction -->
+    <path d="M58,134 L62,139 L59,139 L62,146" fill="none" stroke="#475569" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Output/result node (right) -->
+    <circle cx="140" cy="90" r="28" fill="url(#node-glow-light)"/>
+    <circle cx="140" cy="90" r="12" fill="white" stroke="#64748B" stroke-width="1.5" filter="url(#shadow-light)"/>
+    <!-- Checkmark -->
+    <path d="M134,90 L138,94 L146,86" fill="none" stroke="#64748B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- === RIGHT SECTION: Abstract config/doc card stack === -->
+  <g transform="translate(660, 70)" filter="url(#shadow-lg-light)">
+    <!-- Background card (offset) -->
+    <rect x="12" y="8" width="200" height="240" rx="8" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+
+    <!-- Foreground card -->
+    <rect width="200" height="240" rx="8" fill="white" stroke="#E2E8F0" stroke-width="1"/>
+
+    <!-- Card header area -->
+    <rect x="16" y="16" width="168" height="6" rx="3" fill="#475569" opacity="0.2"/>
+    <rect x="16" y="28" width="120" height="4" rx="2" fill="#94A3B8" opacity="0.15"/>
+
+    <!-- Divider -->
+    <line x1="16" y1="42" x2="184" y2="42" stroke="#E2E8F0" stroke-width="1"/>
+
+    <!-- Config-like key-value rows -->
+    <g transform="translate(16, 52)">
+      <!-- Row 1 -->
+      <rect width="40" height="10" rx="2" fill="#64748B" opacity="0.15"/>
+      <rect x="50" y="0" width="80" height="10" rx="2" fill="#94A3B8" opacity="0.1"/>
+
+      <!-- Row 2 -->
+      <rect y="18" width="55" height="10" rx="2" fill="#64748B" opacity="0.15"/>
+      <rect x="65" y="18" width="60" height="10" rx="2" fill="#94A3B8" opacity="0.1"/>
+
+      <!-- Row 3 -->
+      <rect y="36" width="35" height="10" rx="2" fill="#64748B" opacity="0.15"/>
+      <rect x="45" y="36" width="100" height="10" rx="2" fill="#94A3B8" opacity="0.1"/>
+
+      <!-- Row 4 -->
+      <rect y="54" width="50" height="10" rx="2" fill="#64748B" opacity="0.15"/>
+      <rect x="60" y="54" width="70" height="10" rx="2" fill="#94A3B8" opacity="0.1"/>
+
+      <!-- Nested block indicator -->
+      <rect x="8" y="72" width="30" height="10" rx="2" fill="#64748B" opacity="0.1"/>
+      <rect x="46" y="72" width="90" height="10" rx="2" fill="#94A3B8" opacity="0.08"/>
+
+      <rect x="8" y="90" width="45" height="10" rx="2" fill="#64748B" opacity="0.1"/>
+      <rect x="60" y="90" width="55" height="10" rx="2" fill="#94A3B8" opacity="0.08"/>
+    </g>
+
+    <!-- Bottom accent bar -->
+    <rect x="16" y="214" width="168" height="4" rx="2" fill="#64748B" opacity="0.08"/>
+    <rect x="16" y="214" width="60" height="4" rx="2" fill="#64748B" opacity="0.2"/>
+  </g>
+
+  <!-- === DECORATIVE ELEMENTS === -->
+
+  <!-- Floating geometric shapes -->
+  <rect x="72" y="310" width="16" height="16" rx="3" fill="none" stroke="#94A3B8" stroke-width="1" opacity="0.2" transform="rotate(15, 80, 318)"/>
+  <circle cx="450" cy="48" r="6" fill="none" stroke="#94A3B8" stroke-width="1" opacity="0.2"/>
+  <rect x="890" y="330" width="12" height="12" rx="2" fill="#94A3B8" opacity="0.08" transform="rotate(30, 896, 336)"/>
+  <circle cx="880" cy="60" r="4" fill="#64748B" opacity="0.07"/>
+
+  <!-- Subtle corner accents -->
+  <path d="M20,20 L20,40 M20,20 L40,20" fill="none" stroke="#CBD5E1" stroke-width="1" opacity="0.4"/>
+  <path d="M940,20 L940,40 M940,20 L920,20" fill="none" stroke="#CBD5E1" stroke-width="1" opacity="0.4"/>
+  <path d="M20,360 L20,340 M20,360 L40,360" fill="none" stroke="#CBD5E1" stroke-width="1" opacity="0.4"/>
+  <path d="M940,360 L940,340 M940,360 L920,360" fill="none" stroke="#CBD5E1" stroke-width="1" opacity="0.4"/>
+
+  <!-- Horizontal decorative line -->
+  <line x1="100" y1="340" x2="860" y2="340" stroke="url(#conn-grad-light)" stroke-width="1"/>
+</svg>

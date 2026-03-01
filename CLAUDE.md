@@ -79,7 +79,7 @@ All content files use `.mdx` extension (Markdown + JSX):
 ### OpenAPI Integration
 - `api-reference/openapi.json` - Contains API specification
 - Endpoint MDX files can reference OpenAPI operations using `openapi` frontmatter field
-- Example: `openapi: 'GET /plants'` automatically generates API documentation
+- Example: `openapi: 'GET /tasks'` automatically generates API documentation
 
 ## Development Workflow
 
@@ -242,8 +242,8 @@ yarn add package
 2. **Create endpoint MDX files** that reference OpenAPI operations:
    ```mdx
    ---
-   title: 'Get Plants'
-   openapi: 'GET /plants'
+   title: 'List Tasks'
+   openapi: 'GET /tasks'
    ---
    ```
 

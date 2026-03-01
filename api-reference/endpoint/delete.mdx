@@ -1,12 +1,12 @@
 ---
-title: 'Delete Plant'
-openapi: 'DELETE /plants/{id}'
-description: 'Remove a plant from the store by its ID'
+title: 'Delete Task'
+openapi: 'DELETE /tasks/{id}'
+description: 'Remove a task by its ID'
 icon: 'trash'
 ---
 
 <Warning>
-  This action is permanent. Once a plant is deleted, it cannot be recovered. Make sure you have the correct plant ID before calling this endpoint.
+  This action is permanent. Once a task is deleted, it cannot be recovered. Make sure you have the correct task ID before calling this endpoint.
 </Warning>
 
 ## Usage Notes
@@ -20,6 +20,6 @@ icon: 'trash'
 ```json
 {
   "error": 400,
-  "message": "Plant with the specified ID was not found"
+  "message": "Task with the specified ID was not found"
 }
 ```

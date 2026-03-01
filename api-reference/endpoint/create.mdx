@@ -1,26 +1,26 @@
 ---
-title: 'Create Plant'
-openapi: 'POST /plants'
-description: 'Add a new plant to the store'
+title: 'Create Task'
+openapi: 'POST /tasks'
+description: 'Create a new task'
 icon: 'plus'
 ---
 
 <Info>
-  Send a JSON body with the plant details to create a new entry. The `name` field is required. The server will assign a unique `id` to the newly created plant.
+  Send a JSON body with the task details. The `title` field is required. The server assigns a unique `id` and sets the initial status to `pending`.
 </Info>
 
 ## Usage Notes
 
-- The `name` field is required and must be a non-empty string.
-- The `tag` field is optional and can be used to categorize the plant (e.g., "indoor", "outdoor", "tropical").
-- On success, the endpoint returns the created plant object including the server-assigned `id`.
+- The `title` field is required and must be a non-empty string.
+- The `priority` field is optional — valid values are `low`, `medium`, or `high`.
+- On success, the endpoint returns the created task including the server-assigned `id` and `status`.
 
 ### Example Request Body
 
 ```json
 {
-  "name": "Fiddle Leaf Fig",
-  "tag": "indoor"
+  "title": "Deploy docs site update",
+  "priority": "high"
 }
 ```
 
@@ -28,8 +28,9 @@ icon: 'plus'
 
 ```json
 {
-  "id": 12,
-  "name": "Fiddle Leaf Fig",
-  "tag": "indoor"
+  "id": 3,
+  "title": "Deploy docs site update",
+  "status": "pending",
+  "priority": "high"
 }
 ```
