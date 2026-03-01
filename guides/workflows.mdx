@@ -1,0 +1,210 @@
+---
+title: 'Agent Workflows'
+description: 'Patterns for working with AI agents — how to ask, when to guide, and when to let the agent explore'
+icon: 'diagram-project'
+---
+
+Working with an AI agent is a skill. The difference between a frustrating session and a productive one usually comes down to *how* you communicate — not what you're building.
+
+This page covers the patterns I've found most effective.
+
+---
+
+## The Golden Rule
+
+<Note>
+  **Be specific about the *what*, flexible about the *how*.**
+
+  Tell the agent exactly what you want the end result to look like. Don't tell it which files to edit or what code to write — let it figure out the best approach. It usually knows your codebase better than you think.
+</Note>
+
+---
+
+## Core Workflows
+
+### 1. The Bug Fix
+
+Best for: something is broken and you know the symptoms.
+
+<AccordionGroup>
+  <Accordion title="Step by step" icon="list-ol">
+    1. **Describe the symptom** — what's happening vs. what should happen
+    2. **Paste the error** — stack traces, console output, screenshots descriptions
+    3. **Give context** — "this started after I updated the auth package" or "it only happens on the settings page"
+    4. **Let the agent trace it** — it will read the relevant code and find the root cause
+    5. **Review the fix** — always check what it changed and why
+  </Accordion>
+</AccordionGroup>
+
+**Example prompt:**
+
+```
+The checkout page throws "Cannot read property 'price' of undefined"
+when a user has an empty cart. It should show a "Your cart is empty"
+message instead. Here's the error from the console: [paste error]
+```
+
+<Tip>
+  **More context = better fix.** If you know when the bug started or what you changed recently, say so. The agent can use that to narrow down the cause much faster.
+</Tip>
+
+---
+
+### 2. The New Feature
+
+Best for: adding something that doesn't exist yet.
+
+<AccordionGroup>
+  <Accordion title="Step by step" icon="list-ol">
+    1. **Describe the feature** in plain English — what should the user see and do?
+    2. **Mention constraints** — "it needs to work on mobile" or "use the existing Button component"
+    3. **Ask for a plan first** — say "plan this before writing code" to see the approach
+    4. **Review the plan** — adjust before any code is written
+    5. **Let it implement** — then review the complete diff
+  </Accordion>
+</AccordionGroup>
+
+**Example prompt:**
+
+```
+I want to add a search bar to the dashboard. When the user types,
+it should filter the project list in real time. Use the existing
+Input component from our UI library. Plan this first before writing code.
+```
+
+<Warning>
+  **Common mistake: going too broad.** "Build me an e-commerce site" will give you a mess. "Add a product listing page that shows items from the /api/products endpoint in a grid layout" will give you something useful.
+</Warning>
+
+---
+
+### 3. The Refactor
+
+Best for: reorganizing or cleaning up code without changing behavior.
+
+<AccordionGroup>
+  <Accordion title="Step by step" icon="list-ol">
+    1. **Point to the problem** — "this file is 800 lines long" or "this function does too many things"
+    2. **State the goal** — "split into smaller modules" or "extract the validation logic"
+    3. **Ask it to check for breakages** — "make sure nothing else in the codebase breaks"
+    4. **Review carefully** — refactors touch many files, so check each change
+  </Accordion>
+</AccordionGroup>
+
+**Example prompt:**
+
+```
+The file src/utils/helpers.ts is 600 lines and does everything.
+Split it into focused modules — one for date formatting, one for
+string utils, one for API helpers. Update all imports across the
+project. Make sure nothing breaks.
+```
+
+---
+
+### 4. The Learning Session
+
+Best for: understanding code you didn't write (or wrote six months ago).
+
+<AccordionGroup>
+  <Accordion title="Step by step" icon="list-ol">
+    1. **Point to the code** — "explain what's happening in src/auth/middleware.ts"
+    2. **Set your level** — "explain like I'm new to React" or "I understand the basics but not the async parts"
+    3. **Ask follow-ups** — "why did they use useCallback here?" or "what would break if I removed this?"
+  </Accordion>
+</AccordionGroup>
+
+**Example prompt:**
+
+```
+Walk me through how authentication works in this project.
+Start from when a user clicks "Log In" and trace the flow through
+every file it touches. I'm familiar with JavaScript but not with
+JWT tokens.
+```
+
+<Info>
+  This is one of the most underused features. Claude Code is exceptionally good at reading a codebase and explaining how things connect — often better than the original documentation.
+</Info>
+
+---
+
+### 5. The Project Setup
+
+Best for: starting something from scratch.
+
+<AccordionGroup>
+  <Accordion title="Step by step" icon="list-ol">
+    1. **State the stack** — "Next.js with TypeScript and Tailwind"
+    2. **Describe the project** — "a personal blog with markdown posts"
+    3. **Mention preferences** — "use the app router, not pages" or "Prisma for the database"
+    4. **Let it scaffold** — it will create files, install packages, and set up config
+    5. **Verify it runs** — ask it to start the dev server and confirm everything works
+  </Accordion>
+</AccordionGroup>
+
+**Example prompt:**
+
+```
+Set up a new Next.js 14 project with TypeScript, Tailwind CSS, and
+the app router. Include a basic layout with a header and footer.
+Add a homepage that says "Hello World". Make sure it runs with
+npm run dev.
+```
+
+---
+
+## Prompting Tips
+
+These make a real difference in quality:
+
+<CardGroup cols={2}>
+  <Card title="Say 'plan first'" icon="clipboard-list">
+    Adding "plan this before writing code" to your prompt makes the agent think through its approach. You can catch bad decisions before any code is written.
+  </Card>
+  <Card title="Paste real errors" icon="paste">
+    Don't describe errors — paste them. Stack traces, console output, build logs. The agent can parse these much faster than interpreting your description.
+  </Card>
+  <Card title="Reference files by name" icon="file">
+    "Fix the bug in UserProfile.tsx" is much better than "fix the bug in the user page". File names remove ambiguity.
+  </Card>
+  <Card title="State what you don't want" icon="ban">
+    "Don't use any external libraries" or "don't change the database schema" saves a lot of back-and-forth.
+  </Card>
+</CardGroup>
+
+### What to Avoid
+
+| Instead of this | Try this |
+|----------------|----------|
+| "Fix my code" | "The login form submits twice when clicking fast — fix the double-submit issue" |
+| "Make it better" | "Reduce the load time of the dashboard — it takes 4 seconds currently" |
+| "Build me an app" | "Create a todo list app with React that stores items in localStorage" |
+| "It doesn't work" | "Running `npm test` gives this error: [paste]. It was working yesterday before I updated the auth package." |
+
+---
+
+## When to Start a New Session
+
+Claude Code remembers everything within a session, but long sessions can get cluttered. Start fresh when:
+
+- You're switching to a completely different task
+- The conversation has gone off track and the agent seems confused
+- You've made significant manual changes that the agent doesn't know about
+
+<Tip>
+  Use `claude --continue` to pick up where you left off if you accidentally closed your terminal. Your session history is preserved.
+</Tip>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Skills & Configuration" icon="sliders" href="/guides/skills">
+    Make the agent smarter with CLAUDE.md files and installable skills.
+  </Card>
+  <Card title="MCP Servers" icon="server" href="/guides/mcp-servers">
+    Give the agent access to external tools — GitHub, databases, APIs, and more.
+  </Card>
+</CardGroup>

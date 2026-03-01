@@ -1,0 +1,241 @@
+---
+title: 'Troubleshooting'
+description: 'Common errors, gotchas, and fixes for Claude Code, MCP servers, and agent workflows'
+icon: 'wrench'
+---
+
+Things break. This page is the collection of errors I've hit, fixes that worked, and gotchas I wish someone had told me upfront.
+
+---
+
+## Claude Code Issues
+
+<AccordionGroup>
+  <Accordion title="'claude: command not found'" icon="circle-xmark">
+    **Cause:** The Claude Code binary isn't in your system PATH.
+
+    **Fixes:**
+    1. Close and reopen your terminal (the PATH updates on new sessions)
+    2. Verify the install: `npm list -g @anthropic-ai/claude-code`
+    3. If using `nvm`, switch to the Node version you installed it on: `nvm use 18`
+    4. Reinstall: `npm install -g @anthropic-ai/claude-code`
+
+    <Tip>
+      On Mac/Linux, if `npm install -g` fails with permission errors, run `sudo npm install -g @anthropic-ai/claude-code` or fix your npm permissions: [npm docs on permissions](https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally).
+    </Tip>
+  </Accordion>
+
+  <Accordion title="Authentication fails or loops" icon="circle-xmark">
+    **Cause:** Stale session, browser cookie issues, or incorrect account.
+
+    **Fixes:**
+    1. Run `claude logout` then start `claude` again
+    2. Make sure you're logging in with the same email as your [Anthropic console](https://console.anthropic.com) account
+    3. Check that you have API credits — Claude Code uses your API balance
+    4. Try a different browser if the auth redirect isn't working
+    5. Clear your Claude config: `rm -rf ~/.claude` and start fresh
+  </Accordion>
+
+  <Accordion title="Session is slow or unresponsive" icon="circle-xmark">
+    **Cause:** Large codebase, complex request, or network issues.
+
+    **Fixes:**
+    1. Be more specific — "fix the bug in auth.ts" is faster than "fix all bugs"
+    2. Use a `.claudeignore` file to exclude large directories (like `node_modules/`, `dist/`, large data files)
+    3. Check your internet connection — every request goes to Anthropic's API
+    4. If the agent is stuck in a loop, press `Esc` to interrupt, then redirect it
+  </Accordion>
+
+  <Accordion title="Agent makes changes to the wrong files" icon="circle-xmark">
+    **Cause:** Ambiguous request or the agent misidentified the relevant code.
+
+    **Fixes:**
+    1. Reference files by name: "edit `src/components/Header.tsx`" instead of "edit the header"
+    2. Add a `CLAUDE.md` with your project structure so the agent knows where things live
+    3. If the agent already made bad changes, press `Ctrl+Z` in your editor or use `git checkout -- .` to revert
+  </Accordion>
+
+  <Accordion title="'You've exceeded your rate limit'" icon="circle-xmark">
+    **Cause:** Too many API calls in a short period.
+
+    **Fixes:**
+    1. Wait a few minutes and try again
+    2. Use `claude -p "prompt"` for one-shot tasks (uses fewer API calls than interactive sessions)
+    3. Check your usage at [console.anthropic.com](https://console.anthropic.com)
+    4. Consider upgrading your plan if you're hitting limits regularly
+  </Accordion>
+
+  <Accordion title="Agent doesn't see recent file changes" icon="circle-xmark">
+    **Cause:** The agent's context is stale from earlier in the conversation.
+
+    **Fixes:**
+    1. Tell it: "re-read src/api/routes.ts — I just changed it manually"
+    2. Start a fresh session if you've made lots of manual changes
+    3. Use `claude --continue` to resume with awareness of the current file state
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## MCP Server Issues
+
+<AccordionGroup>
+  <Accordion title="Server doesn't appear after adding to config" icon="circle-xmark">
+    **Cause:** Config not loaded yet, or JSON syntax error.
+
+    **Fixes:**
+    1. **Restart Claude Code** — it only reads the config on startup
+    2. Validate your JSON at [jsonlint.com](https://jsonlint.com) — a single missing comma will silently break everything
+    3. Make sure the config file is in the right place:
+       - Claude Code: `~/.claude/settings.json`
+       - Claude Desktop (Mac): `~/Library/Application Support/Claude/claude_desktop_config.json`
+       - Claude Desktop (Windows): `%APPDATA%\Claude\claude_desktop_config.json`
+  </Accordion>
+
+  <Accordion title="'npx: command not found' when starting server" icon="circle-xmark">
+    **Cause:** Node.js isn't installed or isn't in PATH.
+
+    **Fixes:**
+    1. Install Node.js v18+ from [nodejs.org](https://nodejs.org)
+    2. Verify: `node --version` and `npx --version` should both work
+    3. If using `nvm`, make sure the right version is active
+  </Accordion>
+
+  <Accordion title="GitHub server: 'Bad credentials' or '401 Unauthorized'" icon="circle-xmark">
+    **Cause:** Token is expired, revoked, or doesn't have the right permissions.
+
+    **Fixes:**
+    1. Generate a new token at [github.com/settings/tokens](https://github.com/settings/tokens)
+    2. Required scopes: `repo`, `read:org`, `read:user`
+    3. Check for trailing spaces or newlines in the token string
+    4. Make sure it's the `GITHUB_TOKEN` key in the `env` object — not `GITHUB_PAT` or anything else
+
+    ```json
+    {
+      "github": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-github"],
+        "env": {
+          "GITHUB_TOKEN": "ghp_xxxxxxxxxxxxxxxxxxxx"
+        }
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Filesystem server: 'Permission denied' or can't find path" icon="circle-xmark">
+    **Cause:** The path doesn't exist, isn't absolute, or has permission restrictions.
+
+    **Fixes:**
+    1. Use an **absolute path** — `/Users/you/projects`, not `~/projects` or `./projects`
+    2. Verify the path exists: `ls /Users/you/projects`
+    3. Check file permissions: `ls -la /Users/you/projects`
+    4. On company machines, some directories may be restricted — check with your IT team
+  </Accordion>
+
+  <Accordion title="Server crashes immediately on startup" icon="circle-xmark">
+    **Cause:** Package download failure, incompatible Node version, or missing dependency.
+
+    **Fixes:**
+    1. Test the command manually in your terminal to see the actual error:
+       ```bash
+       npx -y @modelcontextprotocol/server-filesystem /tmp
+       ```
+    2. Clear the npx cache: `npx clear-npx-cache` or `rm -rf ~/.npm/_npx`
+    3. Update Node.js to v18+
+    4. Try adding `@latest` to force the newest version:
+       ```json
+       "args": ["-y", "@modelcontextprotocol/server-filesystem@latest", "/path"]
+       ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## CLAUDE.md & Skills Issues
+
+<AccordionGroup>
+  <Accordion title="Agent ignores my CLAUDE.md rules" icon="circle-xmark">
+    **Cause:** The file isn't where the agent expects it, or the instructions are too vague.
+
+    **Fixes:**
+    1. Make sure `CLAUDE.md` is in the **root directory** of your project (same level as `package.json`)
+    2. Use clear, imperative statements: "Use named exports" not "I prefer named exports"
+    3. Verify the agent reads it: start a session and ask "What do you know about this project from my CLAUDE.md?"
+    4. Keep it concise — very long files may have important rules buried where the agent deprioritizes them
+  </Accordion>
+
+  <Accordion title="Skills won't install: 'npx skills' not working" icon="circle-xmark">
+    **Cause:** The `skills` CLI isn't installed or Node.js is missing.
+
+    **Fixes:**
+    1. Make sure Node.js v18+ is installed
+    2. Try the full command: `npx @anthropic-ai/skills search`
+    3. Clear the npx cache and retry: `npx clear-npx-cache`
+    4. Check [skills.sh](https://skills.sh) directly to browse available skills
+  </Accordion>
+
+  <Accordion title="Hooks aren't firing" icon="circle-xmark">
+    **Cause:** Config syntax error, wrong hook name, or matcher doesn't match.
+
+    **Fixes:**
+    1. Validate `.claude/settings.json` with [jsonlint.com](https://jsonlint.com)
+    2. Hook names are case-sensitive: `PreToolUse`, not `pretooluse`
+    3. The `matcher` field is a regex — `"Edit|Write"` matches either tool, `"Bash"` matches only Bash
+    4. Test your hook command manually in the terminal to make sure it works
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## General Gotchas
+
+Things that aren't errors but will trip you up:
+
+<CardGroup cols={2}>
+  <Card title="Context window limits" icon="ruler-vertical">
+    Very long conversations cause the agent to lose track of earlier context. If it starts forgetting things you discussed, start a fresh session and be explicit about what you need.
+  </Card>
+  <Card title="Agent confidence ≠ correctness" icon="shield-halved">
+    The agent will sometimes confidently suggest a fix that's wrong. Always review changes — especially for security, database operations, and anything that touches production.
+  </Card>
+  <Card title=".claudeignore matters" icon="eye-slash">
+    If the agent can't see a file you're asking about, check if it's excluded by `.claudeignore` or `.gitignore`. Claude respects both by default.
+  </Card>
+  <Card title="One task at a time" icon="bullseye">
+    Asking the agent to do three unrelated things in one message usually gives worse results than three focused requests. Stay focused.
+  </Card>
+</CardGroup>
+
+---
+
+## Quick Fixes Reference
+
+For when you just need the answer:
+
+| Problem | Fix |
+|---------|-----|
+| Can't install Claude Code | `sudo npm install -g @anthropic-ai/claude-code` |
+| Auth broken | `claude logout` then `claude` |
+| Agent seems stuck | Press `Esc` to interrupt, then redirect |
+| MCP server not loading | Restart Claude Code, validate JSON syntax |
+| Changes look wrong | `git diff` to see what changed, `git checkout -- .` to revert |
+| Session too long | Start fresh: `claude` in a new terminal |
+| Config file location | `~/.claude/settings.json` |
+| GitHub token expired | New token at [github.com/settings/tokens](https://github.com/settings/tokens) |
+
+---
+
+## Still Stuck?
+
+<CardGroup cols={3}>
+  <Card title="Anthropic Docs" icon="book" href="https://docs.anthropic.com/en/docs/claude-code/overview">
+    Official Claude Code documentation with the latest features and guides.
+  </Card>
+  <Card title="GitHub Issues" icon="github" href="https://github.com/anthropics/claude-code/issues">
+    Search for your error or file a bug report.
+  </Card>
+  <Card title="MCP Docs" icon="server" href="https://modelcontextprotocol.io">
+    MCP protocol docs and server setup guides.
+  </Card>
+</CardGroup>

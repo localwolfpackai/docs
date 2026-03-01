@@ -20,59 +20,91 @@ This is my personal documentation site. I built it for myself — a single place
 
 If you're here, you're either me, or you found something useful. Either way, welcome.
 
+---
+
+## Guides
+
+The main event. Everything I know about working with AI agents, written so anyone can follow along.
+
 <CardGroup cols={2}>
   <Card
-    title="Quickstart"
-    icon="terminal"
-    href="/quickstart"
+    title="Getting Started with Claude Code"
+    icon="robot"
+    href="/guides/claude-code"
   >
-    How to get this docs site running locally in about 60 seconds.
+    What it is, how to install it, and what your first session looks like. No coding experience required.
   </Card>
   <Card
-    title="Dev Environment"
-    icon="laptop-code"
-    href="/development"
+    title="Agent Workflows"
+    icon="diagram-project"
+    href="/guides/workflows"
   >
-    My local dev setup, CLI tools, and how I preview changes.
+    Patterns for bug fixes, new features, refactors, and learning sessions. How to ask, when to guide, when to let go.
+  </Card>
+  <Card
+    title="MCP Servers"
+    icon="server"
+    href="/guides/mcp-servers"
+  >
+    Connect the agent to GitHub, databases, APIs, and anything else. Setup guides for every server I use.
+  </Card>
+  <Card
+    title="Skills & Configuration"
+    icon="sliders"
+    href="/guides/skills"
+  >
+    CLAUDE.md files, installable skills, and hooks. How to give the agent persistent memory about your project.
   </Card>
 </CardGroup>
 
-## The Toolkit
+<Card
+  title="Troubleshooting"
+  icon="wrench"
+  href="/guides/troubleshooting"
+>
+  Common errors, gotchas, and fixes for Claude Code, MCP servers, and agent workflows. The page I wish existed when I started.
+</Card>
 
-The stuff I actually use and want to remember how to set up.
+---
+
+## Toolkit
+
+The developer reference — code patterns, site config, and the tools that power this documentation.
 
 <CardGroup cols={2}>
   <Card
-    title="Claude Code"
-    icon="robot"
+    title="Code Blocks & Claude Code"
+    icon="code"
     href="/essentials/code"
   >
-    CLAUDE.md configs, skills, hooks, and the agent patterns I use daily.
+    Syntax highlighting, code groups, and the Claude Code commands I use daily.
   </Card>
   <Card
-    title="MCP & Agent Tools"
+    title="Agent Tools & Components"
     icon="bolt"
     href="/advanced/components"
   >
-    MCP server setup, custom servers, skills.sh, and the MDX components I build pages with.
+    MCP server configs, custom server examples, skills.sh, and MDX component reference.
   </Card>
   <Card
     title="Site Config"
     icon="gear"
     href="/essentials/settings"
   >
-    How docs.json works — colors, nav, logos, all of it.
+    How docs.json works — colors, navigation, logos, all of it.
   </Card>
   <Card
-    title="Navigation"
-    icon="map"
-    href="/essentials/navigation"
+    title="Dev Environment"
+    icon="laptop-code"
+    href="/development"
   >
-    How I organize pages, tabs, and groups in the sidebar.
+    Local dev setup, Mintlify CLI, IDE extensions, and deployment.
   </Card>
 </CardGroup>
 
-## Reference
+---
+
+## Quick Reference
 
 <CardGroup cols={3}>
   <Card
@@ -80,7 +112,7 @@ The stuff I actually use and want to remember how to set up.
     icon="text-size"
     href="/essentials/markdown"
   >
-    The syntax I use for every page.
+    The syntax for every page on this site.
   </Card>
   <Card
     title="Images & Embeds"
@@ -90,10 +122,10 @@ The stuff I actually use and want to remember how to set up.
     Screenshots, videos, dark mode images.
   </Card>
   <Card
-    title="Snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
+    title="Navigation"
+    icon="map"
+    href="/essentials/navigation"
   >
-    DRY content I reuse across pages.
+    Sidebar tabs, groups, and page ordering.
   </Card>
 </CardGroup>

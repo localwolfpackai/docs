@@ -1,0 +1,282 @@
+---
+title: 'Skills & Configuration'
+description: 'How to give the agent persistent memory about your project using CLAUDE.md files, skills, and hooks'
+icon: 'sliders'
+---
+
+## The Problem
+
+Every time you start a new Claude Code session, the agent starts fresh. It doesn't know your coding conventions, your project structure, how to run your tests, or what mistakes to avoid.
+
+You end up repeating yourself:
+
+```
+You: Remember, we use snake_case for database columns
+You: Use the existing Button component, not a new one
+You: Run tests with npm test, not yarn test
+```
+
+**CLAUDE.md files, skills, and hooks solve this.** They give the agent persistent context it reads automatically at the start of every session.
+
+---
+
+## CLAUDE.md Files
+
+A `CLAUDE.md` file is a plain text file you put in your project's root directory. Claude Code reads it automatically every time you start a session in that project.
+
+### What to Put in It
+
+Think of it as a note to a new team member on their first day:
+
+```md CLAUDE.md
+# My Project
+
+## Stack
+- Next.js 14 with App Router
+- TypeScript (strict mode)
+- Tailwind CSS for styling
+- Prisma with PostgreSQL
+- Vitest for testing
+
+## Commands
+- `npm run dev` — start dev server on port 3000
+- `npm test` — run test suite
+- `npm run build` — production build
+- `npm run lint` — ESLint + Prettier
+
+## Conventions
+- Use snake_case for database columns, camelCase for TypeScript
+- All API routes return { data, error } envelope
+- Components go in src/components/, pages in src/app/
+- Every new feature needs at least one test
+
+## Don't
+- Don't install new dependencies without asking first
+- Don't modify the database schema without a migration
+- Don't use default exports — always use named exports
+- Don't commit .env files
+```
+
+<Tip>
+  **Keep it short and specific.** Claude reads this at the start of every session — a 20-line file is better than a 200-line essay. Focus on things the agent would otherwise get wrong.
+</Tip>
+
+### Where to Put It
+
+| Location | What it does |
+|----------|-------------|
+| `~/CLAUDE.md` | Applies to **every project** on your machine — global preferences |
+| `./CLAUDE.md` | Applies to **this project only** — project-specific rules |
+| `./src/CLAUDE.md` | Applies to **this subdirectory** — module-specific context |
+
+Claude reads all of them, from global to local. More specific files take priority.
+
+### What Makes a Good CLAUDE.md
+
+<CardGroup cols={2}>
+  <Card title="Commands" icon="terminal">
+    How to install, run, test, build, and deploy. The agent uses these constantly.
+  </Card>
+  <Card title="Conventions" icon="ruler">
+    Naming patterns, file organization, code style preferences that differ from defaults.
+  </Card>
+  <Card title="Don'ts" icon="ban">
+    Things the agent should never do. Explicit prohibitions prevent common mistakes.
+  </Card>
+  <Card title="Architecture" icon="sitemap">
+    High-level explanation of how the project is organized and why.
+  </Card>
+</CardGroup>
+
+<Warning>
+  **Common mistake: putting everything in CLAUDE.md.** Don't paste your entire README, docs, or API spec. Claude already reads your source files — CLAUDE.md is for things it *can't* infer from the code.
+</Warning>
+
+---
+
+## Skills
+
+Skills are **reusable, shareable CLAUDE.md fragments** maintained by the community. Instead of writing the same instructions for every project, you install a skill that adds the right context automatically.
+
+### How to Use Skills
+
+```bash
+# browse available skills
+npx skills search
+
+# search for something specific
+npx skills search "react"
+npx skills search "typescript"
+
+# install a skill
+npx skills add claude-code
+
+# see what's installed
+npx skills list
+```
+
+### What a Skill Looks Like
+
+A skill is just a markdown file with focused instructions. For example, a "React" skill might contain:
+
+- Preferred patterns (functional components, hooks, no class components)
+- Common pitfalls (stale closures, missing dependencies, infinite re-renders)
+- Testing approaches (React Testing Library, user-event, act() patterns)
+- Performance tips (when to memoize, when not to, virtualization patterns)
+
+### Where Skills Live
+
+When you install a skill, it gets saved in your project. Claude reads it alongside your `CLAUDE.md`:
+
+```
+your-project/
+├── CLAUDE.md           ← your project-specific context
+├── .claude/
+│   └── skills/         ← installed skills live here
+│       ├── react.md
+│       └── typescript.md
+└── src/
+```
+
+### Making Your Own Skills
+
+If you have patterns you reuse across projects:
+
+```bash
+# create a new skill
+npx skills create my-conventions
+
+# edit the generated file, then publish
+npx skills publish
+```
+
+<Info>
+  Skills are managed through [skills.sh](https://skills.sh). Think of it as npm, but for agent knowledge instead of code packages.
+</Info>
+
+---
+
+## Hooks
+
+Hooks let you **run shell commands automatically** when certain things happen in a Claude Code session. They're optional but powerful once you have a workflow you want to enforce.
+
+### Available Hook Points
+
+| Hook | When it fires |
+|------|--------------|
+| `PreToolUse` | **Before** the agent uses a tool (reads a file, runs a command, etc.) |
+| `PostToolUse` | **After** a tool finishes |
+| `SessionStart` | When a new session begins |
+| `Stop` | When the agent finishes its response |
+
+### Example: Lint After Every Edit
+
+This hook runs your linter automatically after Claude edits any file:
+
+```json .claude/settings.json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm run lint --fix"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Example: Block Dangerous Commands
+
+This hook prevents the agent from running destructive git commands:
+
+```json .claude/settings.json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE 'git (push --force|reset --hard|clean -fd)'; then echo 'BLOCKED: destructive git command' && exit 1; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+<Warning>
+  Hooks run real shell commands with your user permissions. Test them carefully — a buggy hook can block your entire workflow or run something unintended.
+</Warning>
+
+---
+
+## Putting It All Together
+
+Here's what a well-configured project looks like:
+
+```
+my-project/
+├── CLAUDE.md                  ← project context: stack, commands, conventions
+├── .claude/
+│   ├── settings.json          ← hooks and local config
+│   └── skills/                ← installed skills
+│       └── typescript.md
+├── src/
+│   └── CLAUDE.md              ← module-specific context (optional)
+├── package.json
+└── ...
+```
+
+**Priority order** (most specific wins):
+1. Directory-level `CLAUDE.md` (e.g., `src/CLAUDE.md`)
+2. Project-level `CLAUDE.md`
+3. Installed skills
+4. Global `~/CLAUDE.md`
+
+---
+
+## Tips
+
+<CardGroup cols={2}>
+  <Card title="Start small" icon="seedling">
+    Begin with a 10-line CLAUDE.md covering just your commands and biggest conventions. Add more as you notice the agent making the same mistake twice.
+  </Card>
+  <Card title="Be declarative" icon="list-check">
+    "Use named exports" is better than "I prefer named exports because..." — the agent doesn't need the reasoning, just the rule.
+  </Card>
+  <Card title="Update it regularly" icon="arrows-rotate">
+    Your CLAUDE.md should evolve with your project. When you change your test framework or add a new convention, update the file.
+  </Card>
+  <Card title="Check what others do" icon="users">
+    Browse [skills.sh](https://skills.sh) to see how other developers structure their agent instructions. Good patterns to steal.
+  </Card>
+</CardGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="MCP Servers" icon="server" href="/guides/mcp-servers">
+    Extend the agent's capabilities with external tool integrations.
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/guides/troubleshooting">
+    Common errors, gotchas, and fixes for Claude Code and MCP servers.
+  </Card>
+</CardGroup>
+
+---
+
+**Resources:**
+- [CLAUDE.md documentation](https://docs.anthropic.com/en/docs/claude-code/memory) — official guide to memory files
+- [Skills.sh](https://skills.sh) — browse and install agent skills
+- [Claude Code hooks](https://docs.anthropic.com/en/docs/claude-code/hooks) — full hooks reference

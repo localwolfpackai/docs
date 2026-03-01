@@ -1,0 +1,233 @@
+---
+title: 'Getting Started with Claude Code'
+description: 'What Claude Code is, how to install it, and what your first session looks like — no coding experience required'
+icon: 'robot'
+---
+
+## What is Claude Code?
+
+Claude Code is an **AI assistant that lives in your terminal**. You describe what you want in plain English, and it reads your files, writes code, runs commands, and manages your project — all while explaining what it's doing.
+
+Think of it like having a senior developer sitting next to you who can:
+
+<CardGroup cols={3}>
+  <Card title="Read your project" icon="folder-open">
+    It understands your entire codebase — every file, every folder, every connection between them.
+  </Card>
+  <Card title="Write & edit code" icon="pen-to-square">
+    It creates new files, modifies existing ones, and follows your project's patterns automatically.
+  </Card>
+  <Card title="Run commands" icon="terminal">
+    It can install packages, run tests, start servers, and execute any terminal command.
+  </Card>
+</CardGroup>
+
+<Info>
+  Claude Code is made by [Anthropic](https://www.anthropic.com), the same company behind the Claude AI models. It's not a plugin or extension — it's a standalone tool that runs directly in your terminal.
+</Info>
+
+---
+
+## Installing Claude Code
+
+### Prerequisites
+
+You need two things:
+1. **Node.js v18+** — download from [nodejs.org](https://nodejs.org)
+2. **An Anthropic account** — sign up at [console.anthropic.com](https://console.anthropic.com)
+
+### Installation
+
+Open your terminal and run:
+
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+
+That's it. Verify it worked:
+
+```bash
+claude --version
+```
+
+<Tip>
+  If you see a "permission denied" error on Mac/Linux, you may need to prefix the install command with `sudo`:
+  ```bash
+  sudo npm install -g @anthropic-ai/claude-code
+  ```
+</Tip>
+
+### First Launch
+
+Navigate to any project folder and type:
+
+```bash
+claude
+```
+
+Claude Code will:
+1. Ask you to log in to your Anthropic account (first time only)
+2. Scan your project to understand the codebase
+3. Open an interactive session where you can start asking questions
+
+---
+
+## Your First Session
+
+Here's what a real conversation looks like. You type naturally — no special syntax needed.
+
+<AccordionGroup>
+  <Accordion title="Ask a question about your project" icon="circle-question">
+    ```
+    You: What does this project do? Walk me through the main files.
+    ```
+    Claude reads your files and gives you a plain-English summary of the project structure, what each file does, and how they connect.
+  </Accordion>
+
+  <Accordion title="Ask it to make a change" icon="pen">
+    ```
+    You: Add a dark mode toggle to the settings page
+    ```
+    Claude figures out where the settings page is, what framework you're using, and writes the code. It shows you exactly what it changed before you approve.
+  </Accordion>
+
+  <Accordion title="Fix a bug" icon="bug">
+    ```
+    You: I'm getting a "Cannot read property of undefined" error when I click the save button. Here's the error: [paste error]
+    ```
+    Claude traces the error, finds the root cause, and proposes a fix. It often catches things you wouldn't think to check.
+  </Accordion>
+
+  <Accordion title="Ask it to explain something" icon="graduation-cap">
+    ```
+    You: Explain what the useEffect hook is doing in UserProfile.tsx — I don't understand the dependency array
+    ```
+    Claude reads the specific file and explains the code in plain language, tailored to your experience level.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Key Commands
+
+You don't need to memorize these — but they're handy to know.
+
+| Command | What it does |
+|---------|-------------|
+| `claude` | Start a new interactive session |
+| `claude -p "your request"` | Send a one-shot prompt (no back-and-forth) |
+| `claude --continue` | Pick up where your last session left off |
+| `claude --resume` | Browse and resume any previous session |
+| `/help` | Show available commands inside a session |
+| `/clear` | Clear the current conversation context |
+| `Ctrl+C` | Cancel the current operation |
+| `Esc` (twice) | Exit Claude Code |
+
+<Warning>
+  **Common mistake:** Running `claude` outside of a project folder. Claude Code works best when you're inside the root directory of a project — that's how it knows which files to read.
+</Warning>
+
+---
+
+## How Claude Code Thinks
+
+Understanding this makes you much better at working with it.
+
+### It reads before it writes
+
+When you ask Claude to make a change, it doesn't just guess. It reads the relevant files first, understands the patterns your project uses, and then writes code that fits.
+
+### It asks for permission
+
+Claude Code won't modify files or run commands without showing you what it plans to do first. You always get a chance to approve, reject, or modify its plan.
+
+### It remembers the conversation
+
+Within a single session, Claude remembers everything you've discussed. You can say things like "actually, do that same thing but for the other page too" and it understands the context.
+
+<Note>
+  Claude Code doesn't remember across sessions by default. If you want persistent context, use a [CLAUDE.md file](/guides/skills) — it's like a cheat sheet that Claude reads at the start of every session.
+</Note>
+
+---
+
+## What Can It Do?
+
+A non-exhaustive list of things I use it for regularly:
+
+<CardGroup cols={2}>
+  <Card title="Write features" icon="plus">
+    "Add a search bar to the homepage that filters the product list"
+  </Card>
+  <Card title="Fix bugs" icon="bug">
+    "The login form submits twice when I click the button fast — fix it"
+  </Card>
+  <Card title="Refactor code" icon="arrows-rotate">
+    "Split this 500-line file into smaller, focused modules"
+  </Card>
+  <Card title="Write tests" icon="flask-vial">
+    "Write unit tests for the payment processing module"
+  </Card>
+  <Card title="Set up projects" icon="folder-plus">
+    "Create a new Express API with TypeScript, Prisma, and Jest"
+  </Card>
+  <Card title="Explain code" icon="book-open">
+    "Walk me through how the authentication middleware works"
+  </Card>
+  <Card title="Git workflows" icon="code-branch">
+    "Commit these changes, create a PR with a good description"
+  </Card>
+  <Card title="Debug errors" icon="triangle-exclamation">
+    "Here's the stack trace from production — find the root cause"
+  </Card>
+</CardGroup>
+
+---
+
+## Common Issues
+
+<AccordionGroup>
+  <Accordion title="'claude: command not found' after installation">
+    Your terminal can't find the `claude` command. This usually means Node.js isn't in your system PATH. Try:
+    1. Close and reopen your terminal
+    2. Run `npm list -g` to verify the package installed
+    3. If you're using `nvm`, make sure you're on the right Node version
+  </Accordion>
+
+  <Accordion title="Authentication keeps failing">
+    - Make sure you're logging in with the same email you used at [console.anthropic.com](https://console.anthropic.com)
+    - Check that you have API credits available — Claude Code uses your API balance
+    - Try `claude logout` then `claude` again to re-authenticate
+  </Accordion>
+
+  <Accordion title="Claude seems to ignore parts of my project">
+    Large projects may have files that Claude skips for performance. Check if you have a `.claudeignore` file or if the files are in `.gitignore`. Claude respects both by default.
+  </Accordion>
+
+  <Accordion title="Responses are slow or timing out">
+    - Large codebases take longer to scan on first load
+    - Complex requests that touch many files are naturally slower
+    - Check your internet connection — Claude Code calls Anthropic's API
+    - If it's consistently slow, try being more specific in your requests
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Agent Workflows" icon="diagram-project" href="/guides/workflows">
+    Learn patterns for different kinds of tasks — when to be specific vs. when to let the agent explore.
+  </Card>
+  <Card title="Skills & Configuration" icon="sliders" href="/guides/skills">
+    Set up CLAUDE.md files and install skills to make the agent smarter about your specific project.
+  </Card>
+</CardGroup>
+
+---
+
+**Resources:**
+- [Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code/overview) — official Anthropic docs
+- [Claude Code GitHub](https://github.com/anthropics/claude-code) — source, issues, changelog
+- [Anthropic API console](https://console.anthropic.com) — account, billing, API keys

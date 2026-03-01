@@ -1,0 +1,273 @@
+---
+title: 'MCP Servers'
+description: 'What Model Context Protocol servers are, which ones to use, and how to set them up — even if you have never configured a server before'
+icon: 'server'
+---
+
+## What Are MCP Servers?
+
+By default, Claude Code can read files and run terminal commands in your project. **MCP servers extend what it can do** by connecting it to external tools and services.
+
+Think of MCP servers like plugins:
+
+<CardGroup cols={3}>
+  <Card title="Without MCP" icon="box">
+    Claude can only see files on your computer and run commands in your terminal.
+  </Card>
+  <Card title="With MCP" icon="boxes-stacked">
+    Claude can also create GitHub PRs, query databases, make API calls, search the web, and more.
+  </Card>
+  <Card title="Custom MCP" icon="puzzle-piece">
+    You can build your own server to connect Claude to anything — your company's API, a Slack workspace, a CMS.
+  </Card>
+</CardGroup>
+
+<Info>
+  **MCP** stands for **Model Context Protocol**. It's an open standard created by Anthropic that defines how AI agents talk to external tools. Any tool that speaks MCP can work with any agent that supports it — not just Claude.
+
+  Learn more at [modelcontextprotocol.io](https://modelcontextprotocol.io).
+</Info>
+
+---
+
+## How It Works (Simply)
+
+```
+You → Claude Code → MCP Server → External Service
+                                  (GitHub, database, API, etc.)
+```
+
+1. You ask Claude to do something ("create a PR for these changes")
+2. Claude recognizes it needs an external tool
+3. It calls the appropriate MCP server
+4. The server talks to the external service and returns the result
+5. Claude continues working with that information
+
+You don't need to manage any of this — once configured, it just works.
+
+---
+
+## Recommended Servers
+
+These are the ones I use daily. Start with the first two and add more as you need them.
+
+### Tier 1 — Install These First
+
+<CardGroup cols={2}>
+  <Card title="Filesystem" icon="folder-open">
+    **What:** Enhanced file operations — search, batch edits, directory traversal.
+
+    **Why:** Makes the agent significantly faster at navigating large codebases.
+
+    ```bash
+    npx -y @modelcontextprotocol/server-filesystem /path/to/your/project
+    ```
+  </Card>
+  <Card title="GitHub" icon="github">
+    **What:** Create PRs, manage issues, search repos, review code.
+
+    **Why:** Complete your git workflow without leaving the agent session.
+
+    ```bash
+    npx -y @modelcontextprotocol/server-github
+    ```
+
+    Requires a `GITHUB_TOKEN` environment variable.
+  </Card>
+</CardGroup>
+
+### Tier 2 — When You Need Them
+
+<CardGroup cols={2}>
+  <Card title="Fetch" icon="globe">
+    **What:** Make HTTP requests to any URL — APIs, websites, documentation.
+
+    **Why:** Let the agent read external docs, check API responses, or pull data.
+
+    ```bash
+    npx -y @modelcontextprotocol/server-fetch
+    ```
+  </Card>
+  <Card title="Memory" icon="brain">
+    **What:** Persistent key-value storage that survives across sessions.
+
+    **Why:** Store project context, decisions, or notes that the agent should always remember.
+
+    ```bash
+    npx -y @modelcontextprotocol/server-memory
+    ```
+  </Card>
+</CardGroup>
+
+### Tier 3 — Specialized
+
+<CardGroup cols={2}>
+  <Card title="PostgreSQL" icon="database">
+    **What:** Query and manage PostgreSQL databases directly.
+
+    **Why:** Let the agent inspect schemas, write migrations, or debug data issues.
+  </Card>
+  <Card title="Brave Search" icon="magnifying-glass">
+    **What:** Web search using the Brave Search API.
+
+    **Why:** The agent can research current documentation, find solutions, or check facts.
+  </Card>
+</CardGroup>
+
+---
+
+## Setting Up MCP Servers
+
+### For Claude Code (Terminal)
+
+Claude Code reads its MCP configuration from `~/.claude/settings.json`. Here's a working setup:
+
+```json ~/.claude/settings.json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/you/projects"
+      ]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_TOKEN": "ghp_your_token_here"
+      }
+    },
+    "fetch": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"]
+    }
+  }
+}
+```
+
+<Warning>
+  **Never commit your settings file to git.** It contains tokens and paths specific to your machine. The file lives in your home directory (`~/.claude/`), not in your project.
+</Warning>
+
+### For Claude Desktop App
+
+If you use the Claude desktop app instead of the terminal, the config goes in a different place:
+
+<CodeGroup>
+
+```json macOS
+// ~/Library/Application Support/Claude/claude_desktop_config.json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/you/projects"]
+    }
+  }
+}
+```
+
+```json Windows
+// %APPDATA%\Claude\claude_desktop_config.json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "C:\\Users\\you\\projects"]
+    }
+  }
+}
+```
+
+</CodeGroup>
+
+### Getting a GitHub Token
+
+You need a Personal Access Token (PAT) for the GitHub MCP server:
+
+1. Go to [github.com/settings/tokens](https://github.com/settings/tokens)
+2. Click **"Generate new token (classic)"**
+3. Give it a descriptive name like "Claude MCP"
+4. Select scopes: `repo`, `read:org`, `read:user`
+5. Copy the token and add it to your MCP config
+
+<Tip>
+  Use a **fine-grained token** if you want to limit access to specific repositories. This is safer than a classic token with broad permissions.
+</Tip>
+
+---
+
+## Verifying Your Setup
+
+After adding MCP servers, restart Claude Code and test:
+
+```
+You: What MCP servers do you have access to?
+```
+
+Claude will list all connected servers and their available tools. If something isn't showing up, check:
+
+1. The config file path is correct
+2. The JSON syntax is valid (a missing comma will break everything)
+3. The `npx` commands work when run manually in your terminal
+4. Any required environment variables (like `GITHUB_TOKEN`) are set
+
+---
+
+## Common Issues
+
+<AccordionGroup>
+  <Accordion title="Server not showing up after adding it to config">
+    - You need to **restart Claude Code** after changing the config
+    - Double-check the JSON syntax — use a validator like [jsonlint.com](https://jsonlint.com)
+    - Make sure the config file is in the right location (`~/.claude/settings.json` for Claude Code)
+  </Accordion>
+
+  <Accordion title="'npx: command not found'">
+    `npx` comes with Node.js. If it's missing:
+    - Install Node.js from [nodejs.org](https://nodejs.org) (v18 or higher)
+    - If you use `nvm`, make sure the right version is active: `nvm use 18`
+  </Accordion>
+
+  <Accordion title="GitHub server says 'Bad credentials'">
+    - Your `GITHUB_TOKEN` is expired or incorrect
+    - Generate a new token at [github.com/settings/tokens](https://github.com/settings/tokens)
+    - Make sure the token has the `repo` scope
+    - Check that there are no extra spaces or newlines in the token string
+  </Accordion>
+
+  <Accordion title="Filesystem server can't access my files">
+    - The path in the config must be **absolute** (start with `/` on Mac/Linux or `C:\` on Windows)
+    - The path must exist — the server won't create directories for you
+    - Check file permissions if you're on a work computer with restrictions
+  </Accordion>
+
+  <Accordion title="Server crashes or stops responding">
+    - Run the `npx` command manually in your terminal to see the error output
+    - Make sure you have a stable internet connection (first run downloads the package)
+    - Update to the latest version: add `@latest` to the package name in your config
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Skills & Configuration" icon="sliders" href="/guides/skills">
+    Customize agent behavior with CLAUDE.md files and installable skill packages.
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/guides/troubleshooting">
+    Common errors, fixes, and things I've learned the hard way.
+  </Card>
+</CardGroup>
+
+---
+
+**Resources:**
+- [MCP specification](https://modelcontextprotocol.io) — the official protocol documentation
+- [MCP servers directory](https://github.com/modelcontextprotocol/servers) — all official and community servers
+- [Building MCP servers guide](https://modelcontextprotocol.io/quickstart/server) — create your own

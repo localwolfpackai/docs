@@ -22,6 +22,16 @@
             ]
           },
           {
+            "group": "Guides",
+            "pages": [
+              "guides/claude-code",
+              "guides/workflows",
+              "guides/mcp-servers",
+              "guides/skills",
+              "guides/troubleshooting"
+            ]
+          },
+          {
             "group": "Essentials",
             "pages": [
               "essentials/markdown",
