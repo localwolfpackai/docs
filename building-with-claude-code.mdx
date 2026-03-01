@@ -1,0 +1,96 @@
+---
+title: 'Building This Site with Claude Code'
+description: 'How I used Claude Code to go from a Mintlify starter template to a production-ready documentation site'
+icon: 'wand-magic-sparkles'
+---
+
+This is the story of how I built this documentation site. Not over weeks of careful planning — over a few conversations with an AI coding agent. I'm writing this because the process itself is worth documenting. If you're a solo dev wondering whether AI-assisted development is real or just hype, this is what it actually looks like.
+
+## Starting Point
+
+I started with the Mintlify starter template. If you've seen it, you know — it's a handful of placeholder pages, a basic `docs.json` config, and an OpenAPI spec for a fake plant store API. Functional, but generic. The kind of thing that screams "I just ran the setup command and didn't touch it."
+
+I wanted something different. I wanted a personal knowledge base — a place to document the AI agent tools, dev workflows, and reference material I actually use day to day. Something like [skills.sh](https://skills.sh), but mine. Not a product, not a company wiki. My workshop.
+
+## The Approach
+
+I didn't sit down and write a detailed project plan. I opened Claude Code and told it what I wanted: transform this starter into a production-ready documentation site. The first pass was too corporate — purple theme (I don't use purple), generic product-docs tone, external links pointing to Mintlify's own docs instead of my content. So I pushed back.
+
+That's the thing about working with Claude Code that took me a minute to internalize: **the first output is a draft, not the final answer.** The real value comes from iteration. I told it to make the site feel more like *my* docs. Gave it specifics — electric blue/cyan for the color scheme, "humanlup docs" for the name, AI agent tooling as the content focus. That second pass nailed it.
+
+## What Changed
+
+Here's what the transformation actually involved:
+
+### Theme and Branding
+
+The starter's default theme got replaced with a cyan color scheme (`#06B6D4` primary) that actually matches my style. The navbar now links to my GitHub. The footer has my socials. The search bar says "Search my docs..." instead of something generic. Small details, but they make the difference between a template and a site that feels like yours.
+
+### Content Overhaul
+
+Every page got rewritten. Not just cosmetic changes — structural ones:
+
+- **Homepage** became a personal toolkit hub with cards linking to Claude Code docs, agent skills, site config, and navigation setup
+- **Quickstart** went from a multi-step tutorial to a 60-second "clone and run" page
+- **Code blocks guide** expanded from a 38-line stub to a comprehensive reference with multi-language examples and CodeGroup demos
+- **Components page** now leads with the AI tools I actually use: Claude Code, MCP servers, skills.sh, agent workflow patterns
+- **All 4 API endpoint stubs** got full documentation with example requests, responses, and usage notes
+
+The tone shifted from technical documentation voice to first person. "Here's how I set this up" instead of "Users can configure the following." It's a personal site — it should sound like a person wrote it.
+
+### OpenAPI Fixes
+
+The starter's OpenAPI spec had a confusing schema design where `NewPlant` required an `id` field even though the server assigns IDs on creation. I split it into `Plant` (for POST requests, no ID required) and `PlantWithId` (for responses, includes server-assigned ID). Added examples, summaries, and operation IDs to every endpoint. The kind of cleanup that makes auto-generated API docs actually usable.
+
+### Broken Links
+
+The original starter had 4 broken internal links pointing to pages that didn't exist in the repo. Links to `/writing-content/text`, `/writing-content/embed`, and `/api-playground/demo` — all references to Mintlify's own documentation that don't resolve in a user's docs site. Claude Code found and fixed all of them in the first pass.
+
+## The Testing Infrastructure
+
+After the content was solid, I realized the site had zero automated validation. No `package.json`, no CI, no lint scripts. For a documentation site, that's a problem — broken links and missing frontmatter are silent failures that only show up when someone hits a 404.
+
+So I built a validation suite. The whole thing lives in one file: `scripts/validate.mjs`. It runs 7 checks:
+
+1. **Frontmatter validation** — every MDX page needs a `title` and `description`
+2. **SEO field lengths** — titles under 60 chars, descriptions between 50-160 chars
+3. **Navigation sync** — every page in `docs.json` exists on disk, and every page on disk is in the navigation
+4. **Internal link validation** — all root-relative links (`/essentials/markdown`) resolve to real files
+5. **Asset validation** — all referenced images and logos actually exist
+6. **OpenAPI spec validation** — the JSON is valid, all `$ref` targets exist, security schemes are defined
+7. **Endpoint sync** — every endpoint MDX file's `openapi` field matches a real path in the spec
+
+The validator is smart enough to skip fenced code blocks (so example code like `![alt](/images/my-image.jpg)` doesn't trigger false positives) and handles Mintlify's `WEBHOOK` type alongside standard HTTP methods.
+
+A GitHub Actions workflow runs the validation on every PR and push to main. The whole CI pipeline is 15 lines of YAML. No dependencies to install — it's pure Node.js using the standard library.
+
+Run it locally with `npm run validate`. That's it.
+
+## What I Learned
+
+**AI-assisted development is not autopilot.** Claude Code didn't read my mind. It needed direction, feedback, and course corrections. The purple theme, the corporate tone, the structure that felt like a product docs site — all things I had to push back on. But the iteration loop is fast. Instead of spending hours manually editing 19 MDX files, I described what I wanted and reviewed the output. The total time from starter template to production-ready site was a fraction of what it would have been manually.
+
+**Validation catches what you miss.** The first time I ran the validation script, it found 4 errors and 7 warnings in a codebase that had already been manually reviewed twice. Short descriptions, a webhook path that didn't match the OpenAPI spec, example code being parsed as real links. Automated checks are not optional — even for a personal site.
+
+**Documentation is infrastructure.** This site isn't just pages I read. It's how I remember how things work. The `AGENTS.md` file tells AI assistants how to work in this repo. The `CLAUDE.md` file gives Claude Code full context on the project structure. The validation script ensures nothing silently breaks. These aren't nice-to-haves — they're what make the site maintainable by one person.
+
+## The Stack
+
+| What | Why |
+|------|-----|
+| [Mintlify](https://mintlify.com) | Docs framework — hosting, search, theming, components |
+| [Claude Code](https://claude.ai) | AI coding agent — wrote, refactored, and validated the entire site |
+| [MDX](https://mdxjs.com) | Markdown + React components for rich content |
+| [OpenAPI 3.1](https://www.openapis.org) | Auto-generated API docs from a spec file |
+| [GitHub Actions](https://github.com/features/actions) | CI pipeline running validation on every push |
+| [skills.sh](https://skills.sh) | Agent skill packages — the vibe I was going for |
+
+## What's Next
+
+This site grows as I learn. The API reference section is a working example — I'll swap in real endpoints when I build something worth documenting. The agent tooling section will expand as I add more MCP servers, custom skills, and workflow patterns.
+
+If you're a solo dev thinking about setting up your own documentation site, here's my advice: start with a framework that handles the boring parts (hosting, search, theming), use an AI agent to do the heavy lifting on content and structure, and add validation from day one. You'll thank yourself in six months when something breaks and you catch it before your readers do.
+
+---
+
+*Built by [@localwolfpackai](https://github.com/localwolfpackai) with Claude Code.*

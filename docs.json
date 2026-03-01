@@ -37,7 +37,8 @@
             "pages": [
               "advanced/components",
               "advanced/seo-metadata",
-              "advanced/versioning"
+              "advanced/versioning",
+              "building-with-claude-code"
             ]
           }
         ]

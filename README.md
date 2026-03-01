@@ -74,7 +74,28 @@ docs/
 - Every page is an `.mdx` file (Markdown + React components)
 - `docs.json` controls navigation, colors, logos, and everything else
 - Push to `main` and Mintlify deploys automatically via GitHub app
-- `mintlify broken-links` validates all internal links
+- `npm run validate` checks frontmatter, links, assets, nav sync, OpenAPI, and SEO
+- GitHub Actions runs the validation suite on every PR and push to main
+
+## Validation
+
+The site has a built-in validation suite that catches broken links, missing frontmatter, nav mismatches, and more. No external dependencies — just Node.js.
+
+```bash
+npm run validate
+```
+
+It runs 7 checks:
+
+| Check | What it does |
+|-------|-------------|
+| Frontmatter | Every MDX page has `title` + `description` |
+| SEO | Titles ≤60 chars, descriptions 50–160 chars |
+| Nav sync | `docs.json` entries ↔ disk files match |
+| Internal links | All root-relative links resolve to real pages |
+| Assets | All referenced images and logos exist |
+| OpenAPI | Spec is valid JSON, `$ref` targets exist, security schemes defined |
+| Endpoint sync | Endpoint MDX `openapi` fields match paths in the spec |
 
 ## Stack
 
@@ -84,6 +105,7 @@ docs/
 | [MDX](https://mdxjs.com) | Markdown with React components baked in |
 | [OpenAPI 3.1](https://www.openapis.org) | Auto-generated API docs from a spec file |
 | [Claude Code](https://claude.ai) | My AI coding agent |
+| [GitHub Actions](https://github.com/features/actions) | CI — runs validation on every push |
 | [skills.sh](https://skills.sh) | Agent skill packages |
 
 ## Troubleshooting
@@ -94,6 +116,7 @@ docs/
 | Sharp module error | `npm remove -g mintlify` → upgrade to Node v19+ → reinstall |
 | Random weirdness | Delete `~/.mintlify` folder and try again |
 | Page 404 | Make sure it's in `docs.json` navigation |
+| Validation fails | Run `npm run validate` and fix reported errors |
 
 ---
 

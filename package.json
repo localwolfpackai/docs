@@ -1,0 +1,17 @@
+{
+  "name": "humanlup-docs",
+  "version": "1.0.0",
+  "description": "Personal documentation site for humanlup — AI agent tooling, dev workflows, and reference.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate.mjs",
+    "validate:fix": "node scripts/validate.mjs --fix",
+    "dev": "mintlify dev",
+    "broken-links": "mintlify broken-links"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=19.0.0"
+  }
+}

@@ -32,6 +32,8 @@ Personal documentation site for **humanlup**. Built with Mintlify. Uses MDX for 
 ├── advanced/          # Deeper topics (components, SEO, versioning)
 ├── api-reference/     # API docs + OpenAPI spec
 │   └── endpoint/      # Endpoint MDX files
+├── scripts/           # Validation scripts (validate.mjs)
+├── .github/workflows/ # CI pipeline (validate.yml)
 ├── snippets/          # Reusable content (not rendered as standalone pages)
 ├── images/            # Image assets
 ├── logo/              # Light + dark SVG logos
@@ -56,7 +58,7 @@ Content here. Use Mintlify components where they help.
 Toolkit tab
 ├── Start Here (index, quickstart, development)
 ├── Essentials (markdown, code, images, settings, navigation, reusable-snippets)
-└── Going Deeper (components, seo-metadata, versioning)
+└── Going Deeper (components, seo-metadata, versioning, building-with-claude-code)
 
 API Reference tab
 ├── Overview (introduction, authentication)
@@ -66,6 +68,19 @@ API Reference tab
 ## Available components
 
 `<Note>`, `<Tip>`, `<Info>`, `<Warning>`, `<Card>`, `<CardGroup>`, `<Accordion>`, `<AccordionGroup>`, `<CodeGroup>`, `<Frame>`, `<ResponseField>`, `<Expandable>`, `<Latex>`
+
+## Validation
+
+Run `npm run validate` before pushing. It checks:
+- Frontmatter completeness (title + description on every page)
+- SEO field lengths (title ≤60, description 50–160 chars)
+- Navigation sync (docs.json ↔ disk files)
+- Internal links (all root-relative links resolve)
+- Asset references (images, logos, favicon exist)
+- OpenAPI spec validity ($ref targets, security schemes)
+- Endpoint MDX ↔ OpenAPI path sync
+
+CI runs this automatically on PRs and pushes to main via `.github/workflows/validate.yml`.
 
 ## Tone
 
