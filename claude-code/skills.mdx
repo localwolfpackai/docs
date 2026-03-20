@@ -1,0 +1,155 @@
+---
+title: 'Skills & Commands'
+description: 'How to extend Claude Code with reusable skills, slash commands, and community knowledge packs.'
+icon: 'bolt'
+"og:image": "/images/hero-light.png"
+---
+
+Out of the box, Claude Code is already capable. But the real unlock comes when you extend it with skills and commands that match how *you* work.
+
+## What are skills?
+
+A skill is a bundle of instructions, scripts, and reference material that teaches Claude how to do something specific. Think of it like giving Claude a manual for a task before asking it to perform.
+
+Skills live in your `~/.claude/skills/` directory. Each one has a `SKILL.md` file that describes what it does and when to use it. Claude reads these descriptions and loads the right skill automatically when it recognizes a matching task.
+
+<CardGroup cols={2}>
+  <Card title="Auto-loaded" icon="wand-magic-sparkles">
+    Claude picks up skills based on what you're working on. You don't always have to type a command.
+  </Card>
+  <Card title="User-invoked" icon="keyboard">
+    Some skills are triggered with `/commands`. You type the command and Claude runs the skill.
+  </Card>
+</CardGroup>
+
+## Slash commands you'll actually use
+
+These are the built-in commands that come with Claude Code. You type them directly in the prompt.
+
+| Command | What it does |
+|---------|-------------|
+| `/init` | Generates a starter `CLAUDE.md` for your project based on the current codebase |
+| `/commit` | Stages changes, writes a commit message, and commits. You review before it runs |
+| `/review-pr` | Reviews a pull request, flags issues, suggests improvements |
+| `/compact` | Summarizes the conversation history to free up context space |
+| `/clear` | Wipes the current session. Fresh start, no leftover context |
+| `/model` | Switch which Claude model you're using mid-session |
+| `/simplify` | Reviews code you just changed for quality, reuse, and efficiency |
+| `/batch` | Runs the same operation across multiple files |
+
+<Tip>
+  `/compact` is your best friend. Long sessions eat up Claude's context window, which makes responses slower and less accurate. Use `/compact` when things start feeling sluggish. Or use `/clear` to start completely fresh.
+</Tip>
+
+## How skills and commands fit together
+
+This used to be confusing. Slash commands and skills were separate systems with overlapping purposes. As of Claude Code v2.1.3, they've been merged into one cohesive system.
+
+<AccordionGroup>
+  <Accordion title="Skills = knowledge that Claude loads automatically" icon="brain">
+    When you're working on a task, Claude checks its skill descriptions against the current context. If a skill matches, it loads the instructions automatically. You don't have to do anything.
+
+    Example: if you have a "deploy-to-vercel" skill installed and you say "deploy this project," Claude loads that skill and follows the instructions.
+  </Accordion>
+  <Accordion title="Commands = actions you trigger explicitly" icon="terminal">
+    When you type `/commit` or `/review-pr`, you're invoking a skill directly. The command is just the entry point. Behind the scenes, it's the same skill system.
+  </Accordion>
+  <Accordion title="Custom commands = your own shortcuts" icon="wrench">
+    You can create your own `/commands` by placing Markdown files in `.claude/commands/` in your project. The filename becomes the command name.
+  </Accordion>
+</AccordionGroup>
+
+## Creating a custom command
+
+Say you always want Claude to run a specific review checklist before you push code. You can create a custom command for that:
+
+```markdown .claude/commands/pre-push.md
+---
+description: "Run my pre-push checklist before shipping"
+---
+
+Before pushing, please:
+
+1. Run the test suite and make sure everything passes
+2. Check for any TODO comments that shouldn't ship
+3. Verify there are no console.log statements in production code
+4. Review the git diff for anything that looks unintentional
+5. Write a clear commit message summarizing the changes
+```
+
+Now you can type `/pre-push` in Claude Code and it runs through that exact checklist.
+
+<Info>
+  The `description` in the frontmatter is important. It tells Claude when this command is relevant. If you skip it, Claude won't know when to suggest it.
+</Info>
+
+## Installing community skills
+
+The ecosystem around Claude Code skills is growing. [skills.sh](https://skills.sh) is a community directory where people publish and share skills.
+
+```bash
+# browse available skills
+npx skills search
+
+# install a skill
+npx skills add claude-code
+```
+
+Anthropic also offers managed skills for working with specific file types like PowerPoint, Excel, Word, and PDFs. These are available through the [Skills API](https://docs.claude.com/en/api/agent-sdk/overview).
+
+<Warning>
+  **Watch your skill count.** Claude loads skill descriptions into its context window. If you have too many skills installed, they eat into the space Claude has for actual thinking. The system scales dynamically (about 2% of the context window), but if you have dozens of skills, some may not load. Keep it focused.
+</Warning>
+
+## MCP servers: giving Claude new abilities
+
+Model Context Protocol (MCP) servers are another way to extend Claude Code. While skills give Claude *knowledge*, MCP servers give Claude *abilities*. They connect Claude to external tools and services.
+
+<CardGroup cols={2}>
+  <Card title="GitHub" icon="github">
+    Create PRs, manage issues, search repos. All from within Claude Code.
+  </Card>
+  <Card title="Fetch" icon="download">
+    Make HTTP requests to any API. Useful for checking live services or pulling data.
+  </Card>
+  <Card title="Memory" icon="brain">
+    Persistent context that carries across sessions. Claude remembers things you told it last week.
+  </Card>
+  <Card title="Filesystem" icon="folder-tree">
+    Extended file operations beyond what's built in. Useful for complex file management tasks.
+  </Card>
+</CardGroup>
+
+<Tip>
+  You can allow or deny all tools from a specific MCP server using wildcard syntax in your permissions: `mcp__server__*`. Handy when you trust a server completely or want to block one entirely.
+</Tip>
+
+## Plugins and the marketplace
+
+For teams, Claude Code supports a plugin marketplace. You can install from the official Anthropic marketplace or set up a private company marketplace.
+
+```bash
+# start exploring plugins
+/plugin
+```
+
+Plugins are a newer feature and the ecosystem is still growing. For most solo developers, skills and MCP servers cover everything you need. Plugins become more relevant when you're working on a team and want shared configurations.
+
+## What to set up first
+
+If you're just getting started, here's the order I'd suggest:
+
+<Steps>
+  <Step title="Run /init">
+    Get a CLAUDE.md file generated for your project. This alone makes a huge difference.
+  </Step>
+  <Step title="Learn /commit and /compact">
+    These two commands will save you time every single session.
+  </Step>
+  <Step title="Create one custom command">
+    Pick a workflow you repeat often and turn it into a `.claude/commands/` file. Start simple.
+  </Step>
+  <Step title="Explore skills.sh">
+    Browse community skills. Install one or two that match your stack. Don't go overboard.
+  </Step>
+</Steps>

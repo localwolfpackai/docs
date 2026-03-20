@@ -43,6 +43,26 @@
         ]
       },
       {
+        "tab": "Claude Code",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "claude-code/overview",
+              "claude-code/agents"
+            ]
+          },
+          {
+            "group": "Using It Well",
+            "pages": [
+              "claude-code/skills",
+              "claude-code/workflows",
+              "claude-code/tips"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "API Reference",
         "groups": [
           {
@@ -108,5 +128,12 @@
   "search": {
     "prompt": "Search my docs..."
   },
-  "openapi": ["/api-reference/openapi.json"]
+  "openapi": ["/api-reference/openapi.json"],
+  "metadata": {
+    "og:site_name": "humanlup docs",
+    "og:image": "/images/hero-light.png",
+    "og:type": "website",
+    "twitter:card": "summary_large_image",
+    "twitter:image": "/images/hero-light.png"
+  }
 }

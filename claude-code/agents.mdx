@@ -1,0 +1,144 @@
+---
+title: 'Understanding Agents'
+description: 'What AI agents are, how they work inside Claude Code, and why they matter for anyone building with AI.'
+icon: 'robot'
+"og:image": "/images/hero-light.png"
+---
+
+The word "agent" gets thrown around a lot in AI right now. Sometimes it means something specific. Sometimes it's just marketing. Here's what it actually means inside Claude Code and why it's worth understanding.
+
+## What is an AI agent?
+
+An agent is an AI that can take actions, not just answer questions.
+
+When you ask ChatGPT "how do I fix this bug?", it gives you a suggestion. When you ask Claude Code "fix this bug", it actually reads the code, finds the problem, edits the file, and runs the tests to make sure the fix works. That's the difference.
+
+<Note>
+  Think of it this way: a chatbot gives you a recipe. An agent goes into the kitchen and cooks the meal. You still decide what to eat and taste the result before serving it.
+</Note>
+
+## The agent loop
+
+Every time you give Claude Code a task, it runs through what's called an "agent loop." This is the cycle of thinking, acting, and observing that repeats until the task is done.
+
+<Steps>
+  <Step title="Think">
+    Claude analyzes your request and the current state of the codebase. It figures out what needs to happen.
+  </Step>
+  <Step title="Act">
+    It picks a tool (read a file, write code, run a command) and uses it. You see each action and can approve or deny it.
+  </Step>
+  <Step title="Observe">
+    It looks at the result. Did the file save correctly? Did the test pass? Did the command output what was expected?
+  </Step>
+  <Step title="Repeat">
+    Based on what it observed, it decides the next step. This loop continues until the task is complete or it needs your input.
+  </Step>
+</Steps>
+
+This loop is what makes agents feel different from regular AI chat. They're not just responding to one prompt. They're working through a multi-step task with real feedback from the environment.
+
+## Tools the agent can use
+
+Claude Code's agent has access to a specific set of tools. Each one does something concrete:
+
+<AccordionGroup>
+  <Accordion title="Read" icon="eye">
+    Opens and reads files in your project. This is how Claude understands your existing code before making changes.
+  </Accordion>
+  <Accordion title="Write" icon="pen">
+    Creates new files from scratch. Used when you need something that doesn't exist yet.
+  </Accordion>
+  <Accordion title="Edit" icon="pen-to-square">
+    Makes targeted changes to existing files. Instead of rewriting a whole file, it finds the specific section and updates it.
+  </Accordion>
+  <Accordion title="Bash" icon="terminal">
+    Runs shell commands. This is how Claude installs packages, runs tests, checks git status, and interacts with your system.
+  </Accordion>
+  <Accordion title="Glob and Grep" icon="magnifying-glass">
+    Searches for files by name patterns (Glob) or searches inside file contents (Grep). How Claude finds what it's looking for in your project.
+  </Accordion>
+  <Accordion title="WebSearch and WebFetch" icon="globe">
+    Looks things up on the web or fetches content from a URL. Useful when Claude needs documentation or current information.
+  </Accordion>
+  <Accordion title="Agent (subagents)" icon="users">
+    Spawns a separate Claude instance to work on a subtask. More on this below.
+  </Accordion>
+</AccordionGroup>
+
+<Info>
+  Every tool use asks for your permission by default. Claude won't delete files or run dangerous commands without you saying "yes." You can configure which actions are pre-approved in your project settings.
+</Info>
+
+## Subagents: agents inside agents
+
+This is where it gets interesting. Claude Code can launch smaller, focused agents called **subagents** to handle specific parts of a task. The main agent stays in charge, but it delegates work.
+
+Here's a real example. Say you ask: "Refactor the authentication system and update the tests."
+
+The main agent might:
+1. Analyze the auth code itself
+2. Spawn a subagent to update the test files in parallel
+3. Spawn another subagent to search for related documentation
+4. Merge everything together when the subtasks finish
+
+<CardGroup cols={2}>
+  <Card title="Why subagents matter" icon="arrows-split-up-and-left">
+    They let Claude work on multiple things at once without losing track of the big picture. Each subagent gets its own focused context.
+  </Card>
+  <Card title="Context isolation" icon="shield">
+    Subagents don't clutter the main conversation with research details. They report back with just the results. This keeps the main context clean.
+  </Card>
+</CardGroup>
+
+<Tip>
+  You can create **custom subagents** by placing Markdown files with YAML frontmatter in your project. These let you define specific behaviors, tool restrictions, and even which AI model the subagent uses. Useful when you want a cheaper, faster model for simple research tasks.
+</Tip>
+
+## Plan Mode vs. Act Mode
+
+Claude Code has two modes you should know about:
+
+| Mode | What it does | When to use it |
+|------|-------------|----------------|
+| **Act Mode** (default) | Claude reads, writes, and executes. It takes real actions on your codebase. | Everyday coding, bug fixes, simple tasks |
+| **Plan Mode** | Claude researches and analyzes but can't change anything. It creates a plan for you to review. | Complex tasks, unfamiliar codebases, when you want to understand before committing |
+
+You toggle Plan Mode by pressing `Shift+Tab` twice. It's like putting Claude in "architect mode." It'll map out everything that needs to happen, and you decide whether to proceed.
+
+<Warning>
+  For anything complex, start in Plan Mode. Let Claude lay out the approach first. Jumping straight into Act Mode on a big task is how you end up with changes you don't understand and can't easily undo.
+</Warning>
+
+## The Agent SDK (for builders)
+
+If you want to build your own tools powered by the same engine that runs Claude Code, Anthropic offers the [Agent SDK](https://docs.claude.com/en/api/agent-sdk/overview). It's the same agent loop, tools, and context management exposed as a library.
+
+<CardGroup cols={2}>
+  <Card title="TypeScript SDK" icon="js">
+    Install with `npm install @anthropic-ai/claude-agent-sdk`. Full access to the agent loop and all built-in tools.
+  </Card>
+  <Card title="Python SDK" icon="python">
+    Same capabilities, Python flavor. Good for data pipelines, automation scripts, and backend tools.
+  </Card>
+</CardGroup>
+
+The SDK is not a beginner tool. It's for people who want to build custom agent experiences: CI/CD bots, automated code reviewers, internal tooling. But it's good to know it exists because it shows how the same patterns you use in Claude Code can power entirely custom applications.
+
+<Note>
+  The Agent SDK was formerly called the "Claude Code SDK." If you see that name in older blog posts or tutorials, it's the same thing.
+</Note>
+
+## Key takeaways
+
+<CardGroup cols={3}>
+  <Card title="Agents act" icon="play">
+    They don't just suggest. They read, write, run, and verify.
+  </Card>
+  <Card title="You stay in control" icon="shield-halved">
+    Every action is permissioned. Nothing happens without your approval.
+  </Card>
+  <Card title="Subagents scale" icon="layer-group">
+    Complex tasks get broken down and handled in parallel, keeping the main context focused.
+  </Card>
+</CardGroup>
