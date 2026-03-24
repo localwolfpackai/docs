@@ -1,0 +1,93 @@
+name: Lupo Studios Quality Gate
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Branding scan
+        run: |
+          echo "Scanning for default branding taglines..."
+          FOUND=$(grep -r \
+            --include="*.tsx" --include="*.ts" --include="*.jsx" --include="*.js" \
+            --include="*.html" --include="*.md" --include="*.json" \
+            --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=dist \
+            --exclude=package-lock.json \
+            -l -E "Built with v0|Vite \+ React|Made with Replit|Created with CodeSandbox|Powered by Vercel" \
+            . 2>/dev/null || true)
+          if [ -n "$FOUND" ]; then
+            echo "::error::Default branding found in the following files:"
+            echo "$FOUND" | while read -r f; do echo "::error file=$f::Contains default branding tagline"; done
+            exit 1
+          fi
+          echo "No default branding found."
+
+      - name: Console.log scan
+        continue-on-error: true
+        run: |
+          echo "Scanning for console.log statements..."
+          DIRS=""
+          for d in src app components lib pages; do
+            [ -d "$d" ] && DIRS="$DIRS $d"
+          done
+          if [ -z "$DIRS" ]; then
+            echo "No source directories found, skipping."
+            exit 0
+          fi
+          # Find console.log not preceded by eslint-disable
+          FOUND=$(grep -rn \
+            --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" \
+            "console\.log" $DIRS 2>/dev/null \
+            | grep -v "eslint-disable" || true)
+          if [ -n "$FOUND" ]; then
+            echo "::warning::console.log statements found (consider removing):"
+            echo "$FOUND" | head -50 | while IFS=: read -r file line rest; do
+              echo "::warning file=$file,line=$line::console.log found"
+            done
+          else
+            echo "No console.log statements found."
+          fi
+
+      - name: Secrets scan
+        run: |
+          echo "Checking .gitignore for env file patterns..."
+          if [ ! -f .gitignore ]; then
+            echo "::error::No .gitignore file found. Create one and add .env, .env.local, .env.*.local"
+            exit 1
+          fi
+          MISSING=""
+          grep -qE "^\.env$" .gitignore 2>/dev/null || MISSING="$MISSING .env"
+          grep -qE "^\.env\.local$" .gitignore 2>/dev/null || MISSING="$MISSING .env.local"
+          grep -qE "^\.env\.\*\.local$" .gitignore 2>/dev/null || MISSING="$MISSING .env.*.local"
+          if [ -n "$MISSING" ]; then
+            echo "::error::Missing from .gitignore:$MISSING"
+            echo "Add these patterns to .gitignore to prevent leaking secrets."
+            exit 1
+          fi
+          echo ".gitignore looks good."
+
+      - name: Alt tag check
+        continue-on-error: true
+        run: |
+          echo "Scanning for img tags without alt attributes..."
+          FOUND=$(grep -rn \
+            --include="*.tsx" --include="*.jsx" --include="*.html" \
+            --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=dist \
+            "<img " . 2>/dev/null \
+            | grep -v "alt=" || true)
+          if [ -n "$FOUND" ]; then
+            echo "::warning::Images without alt attributes found:"
+            echo "$FOUND" | head -30 | while IFS=: read -r file line rest; do
+              echo "::warning file=$file,line=$line::img tag missing alt attribute"
+            done
+          else
+            echo "All img tags have alt attributes."
+          fi
