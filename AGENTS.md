@@ -14,8 +14,12 @@ Personal documentation site for **humanlup**. Built with Mintlify. Uses MDX for 
 
 ### Operational Tasks & Rules of Engagement
 
-- **The "Drop-Box" Pattern (Shared Memory)**: We organize by shared memory rather than strict role ownership. Always consult `docs/agents/decisions.md` before taking action to understand the current architectural state. When making decisions, logging overlaps, or resolving conflicts, write your findings into this file.
-- **Continuous Auditing**: Track all PRs (past and current). If you detect overlapping logic or overlooked steps, document the discrepancy in a `shadow-log.md` within the PR folder rather than interrupting the execution.
+- **The "Drop-Box" Pattern (Shared Memory)**: We organize by shared memory rather than strict role ownership. Always consult `docs/agents/decisions.mdx` before taking action to understand the current architectural state. When making decisions, logging overlaps, or resolving conflicts, write your findings into this file. **Note**: all future decisions and shadow logs must be formatted as `.mdx` files to comply with repository rules.
+- **Visual Orchestration Rules**:
+  You are the orchestrator for localwolfpackai. Because the project director prefers visual dashboards over reading logs, you must communicate project state and agent activity visually using Mermaid flowcharts.
+  * **The Visual Audit**: Every time you analyze a Pull Request, update a log, or resolve a conflict between agents, you MUST generate a Mermaid flowchart (`graph TD` or `graph LR`) at the very top of your summary or `shadow-log.mdx`.
+  * **Chart Requirements**: Your Mermaid charts must instantly communicate who did what (e.g., Jules: Setup Database), the sequence of work using arrows, and the current status using color-coded nodes (Green for complete, Yellow for in-progress or conflict).
+  * **Rule of Thumb**: Do not rely on dense text paragraphs. Make the visual map the single source of truth for the project state.
 - **The "Agent Wiki"**: Maintain `docs/agents/` as a reference library for agents to understand the project's state and coding standards.
 - **Stakeholder Callouts**: For every major update, provide a "Non-Technical Impact Report" in `docs/agents/stakeholder-briefs/`. Use bold callouts to explain how technical changes affect the design, user flow, or business logic.
 - **Post-Mortem & Growth**: After a PR is merged, summarize the "Orchestration Efficiency" in the shared memory. Note where Lupo excelled and where the logic was "brittle," providing actionable suggestions for prompt engineering improvements.
@@ -25,7 +29,7 @@ Personal documentation site for **humanlup**. Built with Mintlify. Uses MDX for 
   - 🟠 **Claude**
   - 🔵 **Copilot**
   - ⚪️ **Codex**
-  Track their individual contributions in a 'Contributor Registry' in `docs/agents/decisions.md` to help understand each agent's strengths and where their logic might overlap or conflict.
+  Track their individual contributions in a 'Contributor Registry' in `docs/agents/decisions.mdx` to help understand each agent's strengths and where their logic might overlap or conflict.
 
 ## Rules
 
