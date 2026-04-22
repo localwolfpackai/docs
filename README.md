@@ -1,30 +1,22 @@
+<div align="center">
+
 # humanlup docs
 
-> My personal knowledge base for AI agent tooling, dev workflows, and the stuff I actually use to ship solo.
+**Personal knowledge base for AI agent tooling, dev workflows, and the stuff I actually use to ship solo.**
 
-```
- _                           _
-| |__  _   _ _ __ ___   __ _| |_ __  _   _ _ __
-| '_ \| | | | '_ ` _ \ / _` | | '_ \| | | | '_ \
-| | | | |_| | | | | | | (_| | | | | | |_| | |_) |
-|_| |_|\__,_|_| |_| |_|\__,_|_|_| |_|\__,_| .__/
-                                            |_|    docs
-```
+[![Built with Mintlify](https://img.shields.io/badge/built%20with-Mintlify-06B6D4?style=flat-square)](https://mintlify.com)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
+[![Pages](https://img.shields.io/badge/pages-25-06B6D4?style=flat-square)](#site-structure)
+
+</div>
 
 ---
 
-## What is this?
+This is my workshop, not a product. A single place to keep track of the tools, configs, patterns, and workflows I rely on day to day as a solo builder working with AI agents.
 
-This is my documentation site. I built it with [Mintlify](https://mintlify.com) to keep track of:
+If you're here, you either are me, or you found something useful. Either way, welcome.
 
-- **AI agent workflows** — Claude Code, MCP servers, skills.sh, agent patterns
-- **Dev environment setup** — the CLI tools, configs, and shortcuts I rely on
-- **Reference pages** — markdown syntax, components, code blocks, nav config
-- **API patterns** — OpenAPI specs, auth flows, endpoint documentation
-
-It's not a product. It's my workshop. If you're reading this, you either are me or you found something useful.
-
-## Run it locally
+## Quick start
 
 ```bash
 npm i -g mintlify
@@ -33,67 +25,94 @@ cd docs
 mintlify dev
 ```
 
-Open [localhost:3000](http://localhost:3000). Done.
+Open [localhost:3000](http://localhost:3000). That's it.
 
-## Project layout
+## Site structure
+
+The site has three main tabs and 25 pages across 6 sections.
 
 ```
-docs/
-├── docs.json              # The one config file that runs everything
-├── index.mdx              # Homepage
-├── quickstart.mdx         # 60-second setup guide
-├── development.mdx        # Dev environment details
+Toolkit                 Claude Code              API Reference
+  Start Here              Getting Started          Overview
+    index                   overview                 introduction
+    quickstart              agents                   authentication
+    development                                    Endpoints
+  Essentials              Using It Well              get
+    markdown                skills                   create
+    code                    workflows                delete
+    images                  tips                     webhook
+    settings
+    navigation
+    reusable-snippets
+  Going Deeper
+    components
+    seo-metadata
+    versioning
+```
+
+## What's in here
+
+| Section | What it covers |
+|---------|---------------|
+| **Start Here** | Homepage, 60-second setup, local dev environment |
+| **Claude Code** | What it is, how agents work, skills and slash commands, daily workflows, tips and troubleshooting. Written for non-devs. |
+| **Essentials** | Markdown syntax, code blocks, images, site config, navigation, reusable snippets |
+| **Going Deeper** | MDX components, SEO metadata, multi-version docs |
+| **API Reference** | OpenAPI 3.1 spec, bearer auth, endpoint docs (auto-generated) |
+| **Snippets** | Reusable content blocks shared across pages |
+
+## Repo layout
+
+```
+/
+├── docs.json                # Navigation, theme, branding. The one config file.
+├── CLAUDE.md                # AI assistant context (read every session)
+├── AGENTS.md                # Rules for AI agents working in this repo
+├── .gitignore               # node_modules, .mintlify, OS files, .env
 │
-├── essentials/            # Core reference pages
-│   ├── markdown.mdx       # MDX syntax
-│   ├── code.mdx           # Code blocks & highlighting
-│   ├── images.mdx         # Images, embeds, dark mode
-│   ├── settings.mdx       # docs.json config reference
-│   ├── navigation.mdx     # Sidebar & tab setup
-│   └── reusable-snippets.mdx
+├── claude-code/             # AI coding tool guides (5 pages, ~5.7k words)
+├── essentials/              # Core reference (6 pages)
+├── advanced/                # Deeper topics (3 pages)
+├── api-reference/           # API docs + OpenAPI spec
+│   └── endpoint/            # Individual endpoint pages
+├── snippets/                # Reusable content (not standalone pages)
+├── images/                  # Hero images, screenshots
+├── logo/                    # Light + dark SVGs
 │
-├── advanced/              # Deeper topics
-│   ├── components.mdx     # Agent skills + MDX components
-│   ├── seo-metadata.mdx   # SEO setup
-│   └── versioning.mdx     # Multi-version docs (for later)
-│
-├── api-reference/         # API docs
-│   ├── introduction.mdx
-│   ├── authentication.mdx
-│   ├── openapi.json       # OpenAPI 3.1 spec
-│   └── endpoint/          # Individual endpoint pages
-│
-├── snippets/              # Reusable content
-├── images/                # Screenshots & assets
-├── logo/                  # Light + dark logos
+├── index.mdx                # Homepage
+├── quickstart.mdx           # Setup guide
+├── development.mdx          # Dev environment
+├── repo-map.html            # Visual repo dashboard (standalone, open in browser)
 └── favicon.svg
 ```
 
 ## How it works
 
-- Every page is an `.mdx` file (Markdown + React components)
-- `docs.json` controls navigation, colors, logos, and everything else
-- Push to `main` and Mintlify deploys automatically via GitHub app
-- `mintlify broken-links` validates all internal links
+Every page is an `.mdx` file. The sidebar, tabs, colors, and everything else are controlled by `docs.json`. Push to `main` and Mintlify deploys automatically via GitHub app.
 
 ## Stack
 
-| What | Why |
-|------|-----|
-| [Mintlify](https://mintlify.com) | Docs framework. Handles hosting, search, theming |
-| [MDX](https://mdxjs.com) | Markdown with React components baked in |
-| [OpenAPI 3.1](https://www.openapis.org) | Auto-generated API docs from a spec file |
-| [Claude Code](https://claude.ai) | My AI coding agent |
+| Tool | Role |
+|------|------|
+| [Mintlify](https://mintlify.com) | Docs framework, hosting, search, theming |
+| [MDX](https://mdxjs.com) | Markdown with React components |
+| [OpenAPI 3.1](https://www.openapis.org) | Auto-generated API documentation |
+| [Claude Code](https://code.claude.com) | AI coding agent |
 | [skills.sh](https://skills.sh) | Agent skill packages |
 
 ## Troubleshooting
 
 | Problem | Fix |
 |---------|-----|
-| Port 3000 in use | It auto-picks the next one, or `mintlify dev --port 3333` |
-| Sharp module error | `npm remove -g mintlify` → upgrade to Node v19+ → reinstall |
-| Random weirdness | Delete `~/.mintlify` folder and try again |
-| Page 404 | Make sure it's in `docs.json` navigation |
+| Port 3000 in use | Auto-picks next port, or `mintlify dev --port 3333` |
+| Sharp module error (macOS) | Uninstall, upgrade to Node 18+, reinstall |
+| Random weirdness | Delete `~/.mintlify` and try again |
+| Page 404 | Check that `docs.json` navigation includes the page path |
+| Stale local preview | Run `npm i -g mintlify@latest` to update the CLI |
+
+## Contributing
+
+This is a personal repo. If you want to suggest a fix, open an issue. PRs from strangers are unlikely to be merged unless they fix something clearly broken.
 
 ---
 
