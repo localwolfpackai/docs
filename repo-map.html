@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>humanlup docs — Repo Map</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --cyan-50: #ecfeff;
+    --cyan-100: #cffafe;
+    --cyan-200: #a5f3fc;
+    --cyan-300: #67e8f9;
+    --cyan-400: #22d3ee;
+    --cyan-500: #06b6d4;
+    --cyan-600: #0891b2;
+    --cyan-700: #0e7490;
+    --cyan-800: #155e75;
+    --cyan-900: #164e63;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --green-400: #4ade80;
+    --green-500: #22c55e;
+    --amber-400: #fbbf24;
+    --amber-500: #f59e0b;
+    --violet-400: #a78bfa;
+    --violet-500: #8b5cf6;
+    --rose-400: #fb7185;
+    --rose-500: #f43f5e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--gray-900);
+    color: var(--gray-100);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .noise {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .glow-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .glow-orb.cyan { width: 600px; height: 600px; background: var(--cyan-500); top: -200px; right: -100px; }
+  .glow-orb.violet { width: 400px; height: 400px; background: var(--violet-500); bottom: -100px; left: -100px; }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 24px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .header .label {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cyan-400);
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid rgba(6, 182, 212, 0.2);
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+  }
+  .header h1 {
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    background: linear-gradient(135deg, var(--gray-100), var(--cyan-300));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .header p {
+    font-size: 16px;
+    color: var(--gray-400);
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Stats Row */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .stat {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: border-color 0.3s, transform 0.2s;
+  }
+  .stat:hover {
+    border-color: rgba(6, 182, 212, 0.3);
+    transform: translateY(-2px);
+  }
+  .stat .number {
+    font-size: 36px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    background: linear-gradient(135deg, var(--cyan-300), var(--cyan-500));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .stat .desc {
+    font-size: 13px;
+    color: var(--gray-400);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* Section Map */
+  .sections {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 48px;
+  }
+  .section-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 20px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+  .section-card:hover {
+    transform: translateY(-3px);
+  }
+  .section-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 20px 20px 0 0;
+  }
+  .section-card.cyan::before { background: linear-gradient(90deg, var(--cyan-400), var(--cyan-600)); }
+  .section-card.cyan:hover { border-color: rgba(6, 182, 212, 0.3); }
+  .section-card.green::before { background: linear-gradient(90deg, var(--green-400), var(--green-500)); }
+  .section-card.green:hover { border-color: rgba(34, 197, 94, 0.3); }
+  .section-card.violet::before { background: linear-gradient(90deg, var(--violet-400), var(--violet-500)); }
+  .section-card.violet:hover { border-color: rgba(139, 92, 246, 0.3); }
+  .section-card.amber::before { background: linear-gradient(90deg, var(--amber-400), var(--amber-500)); }
+  .section-card.amber:hover { border-color: rgba(245, 158, 11, 0.3); }
+  .section-card.rose::before { background: linear-gradient(90deg, var(--rose-400), var(--rose-500)); }
+  .section-card.rose:hover { border-color: rgba(244, 63, 94, 0.3); }
+
+  .section-card .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .section-card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-100);
+  }
+  .section-card .page-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+  .section-card.cyan .page-count { color: var(--cyan-400); background: rgba(6,182,212,0.1); }
+  .section-card.green .page-count { color: var(--green-400); background: rgba(34,197,94,0.1); }
+  .section-card.violet .page-count { color: var(--violet-400); background: rgba(139,92,246,0.1); }
+  .section-card.amber .page-count { color: var(--amber-400); background: rgba(245,158,11,0.1); }
+  .section-card.rose .page-count { color: var(--rose-400); background: rgba(244,63,94,0.1); }
+
+  .file-list {
+    list-style: none;
+  }
+  .file-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+  }
+  .file-list li:last-child { border-bottom: none; }
+  .file-list .filename {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--gray-300);
+    font-size: 12px;
+  }
+  .file-list .wordcount {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--gray-500);
+  }
+
+  /* Word count bars */
+  .bar-section {
+    margin-bottom: 48px;
+  }
+  .bar-section h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: var(--gray-200);
+  }
+  .bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .bar-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 60px;
+    align-items: center;
+    gap: 12px;
+  }
+  .bar-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--gray-400);
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .bar-track {
+    height: 24px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+  .bar-fill.cyan { background: linear-gradient(90deg, var(--cyan-600), var(--cyan-400)); }
+  .bar-fill.green { background: linear-gradient(90deg, var(--green-500), var(--green-400)); }
+  .bar-fill.violet { background: linear-gradient(90deg, var(--violet-500), var(--violet-400)); }
+  .bar-fill.amber { background: linear-gradient(90deg, var(--amber-500), var(--amber-400)); }
+  .bar-fill.rose { background: linear-gradient(90deg, var(--rose-500), var(--rose-400)); }
+  .bar-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--gray-500);
+    text-align: right;
+  }
+
+  /* Tree view */
+  .tree-section {
+    margin-bottom: 48px;
+  }
+  .tree-section h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: var(--gray-200);
+  }
+  .tree {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 28px 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--gray-400);
+  }
+  .tree .dir { color: var(--cyan-400); font-weight: 500; }
+  .tree .file { color: var(--gray-300); }
+  .tree .config { color: var(--amber-400); }
+  .tree .dim { color: var(--gray-600); }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer p {
+    font-size: 12px;
+    color: var(--gray-600);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .footer .accent { color: var(--cyan-500); }
+
+  /* Contributors */
+  .contrib {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .contrib-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: border-color 0.3s;
+  }
+  .contrib-card:hover { border-color: rgba(255,255,255,0.12); }
+  .contrib-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .contrib-avatar.human { background: linear-gradient(135deg, var(--cyan-600), var(--cyan-400)); color: white; }
+  .contrib-avatar.ai { background: linear-gradient(135deg, var(--violet-600), var(--violet-400)); color: white; }
+  .contrib-info h4 { font-size: 14px; font-weight: 600; color: var(--gray-200); }
+  .contrib-info p { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+  .contrib-info .commits {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--cyan-400);
+    margin-top: 4px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .sections { grid-template-columns: 1fr; }
+    .contrib { grid-template-columns: 1fr; }
+    .header h1 { font-size: 32px; }
+    .bar-row { grid-template-columns: 120px 1fr 50px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+<div class="glow-orb cyan"></div>
+<div class="glow-orb violet"></div>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="label">repo overview</div>
+    <h1>humanlup docs</h1>
+    <p>Personal knowledge base. AI agent tooling, dev workflows, and everything I use to ship solo.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="number">25</div>
+      <div class="desc">MDX Pages</div>
+    </div>
+    <div class="stat">
+      <div class="number">10.6k</div>
+      <div class="desc">Total Words</div>
+    </div>
+    <div class="stat">
+      <div class="number">11</div>
+      <div class="desc">Commits</div>
+    </div>
+    <div class="stat">
+      <div class="number">5</div>
+      <div class="desc">PRs Shipped</div>
+    </div>
+  </div>
+
+  <!-- Contributors -->
+  <div class="contrib">
+    <div class="contrib-card">
+      <div class="contrib-avatar human">L</div>
+      <div class="contrib-info">
+        <h4>Lupo</h4>
+        <p>Project lead, direction, editorial voice</p>
+        <div class="commits">5 commits</div>
+      </div>
+    </div>
+    <div class="contrib-card">
+      <div class="contrib-avatar ai">C</div>
+      <div class="contrib-info">
+        <h4>Claude</h4>
+        <p>Docs authoring, code, repo hygiene</p>
+        <div class="commits">6 commits</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Map -->
+  <div class="sections">
+    <div class="section-card cyan">
+      <div class="section-header">
+        <h3>Start Here</h3>
+        <span class="page-count">3 pages</span>
+      </div>
+      <ul class="file-list">
+        <li><span class="filename">index.mdx</span><span class="wordcount">370w</span></li>
+        <li><span class="filename">quickstart.mdx</span><span class="wordcount">281w</span></li>
+        <li><span class="filename">development.mdx</span><span class="wordcount">339w</span></li>
+      </ul>
+    </div>
+
+    <div class="section-card green">
+      <div class="section-header">
+        <h3>Claude Code</h3>
+        <span class="page-count">5 pages</span>
+      </div>
+      <ul class="file-list">
+        <li><span class="filename">overview.mdx</span><span class="wordcount">889w</span></li>
+        <li><span class="filename">agents.mdx</span><span class="wordcount">1,113w</span></li>
+        <li><span class="filename">skills.mdx</span><span class="wordcount">1,067w</span></li>
+        <li><span class="filename">workflows.mdx</span><span class="wordcount">1,348w</span></li>
+        <li><span class="filename">tips.mdx</span><span class="wordcount">1,304w</span></li>
+      </ul>
+    </div>
+
+    <div class="section-card violet">
+      <div class="section-header">
+        <h3>Essentials</h3>
+        <span class="page-count">6 pages</span>
+      </div>
+      <ul class="file-list">
+        <li><span class="filename">markdown.mdx</span><span class="wordcount">404w</span></li>
+        <li><span class="filename">code.mdx</span><span class="wordcount">419w</span></li>
+        <li><span class="filename">images.mdx</span><span class="wordcount">323w</span></li>
+        <li><span class="filename">settings.mdx</span><span class="wordcount">754w</span></li>
+        <li><span class="filename">navigation.mdx</span><span class="wordcount">261w</span></li>
+        <li><span class="filename">reusable-snippets.mdx</span><span class="wordcount">379w</span></li>
+      </ul>
+    </div>
+
+    <div class="section-card amber">
+      <div class="section-header">
+        <h3>Going Deeper</h3>
+        <span class="page-count">3 pages</span>
+      </div>
+      <ul class="file-list">
+        <li><span class="filename">components.mdx</span><span class="wordcount">463w</span></li>
+        <li><span class="filename">seo-metadata.mdx</span><span class="wordcount">295w</span></li>
+        <li><span class="filename">versioning.mdx</span><span class="wordcount">217w</span></li>
+      </ul>
+    </div>
+
+    <div class="section-card rose">
+      <div class="section-header">
+        <h3>API Reference</h3>
+        <span class="page-count">6 pages</span>
+      </div>
+      <ul class="file-list">
+        <li><span class="filename">introduction.mdx</span><span class="wordcount">218w</span></li>
+        <li><span class="filename">authentication.mdx</span><span class="wordcount">271w</span></li>
+        <li><span class="filename">get.mdx</span><span class="wordcount">104w</span></li>
+        <li><span class="filename">create.mdx</span><span class="wordcount">126w</span></li>
+        <li><span class="filename">delete.mdx</span><span class="wordcount">110w</span></li>
+        <li><span class="filename">webhook.mdx</span><span class="wordcount">185w</span></li>
+      </ul>
+    </div>
+
+    <div class="section-card cyan">
+      <div class="section-header">
+        <h3>Snippets</h3>
+        <span class="page-count">2 files</span>
+      </div>
+      <ul class="file-list">
+        <li><span class="filename">snippet-intro.mdx</span><span class="wordcount">reusable</span></li>
+        <li><span class="filename">prerequisites.mdx</span><span class="wordcount">reusable</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Word Count Bars -->
+  <div class="bar-section">
+    <h2>Content depth by page</h2>
+    <div class="bar-chart">
+      <div class="bar-row">
+        <span class="bar-label">workflows.mdx</span>
+        <div class="bar-track"><div class="bar-fill green" style="width: 100%"></div></div>
+        <span class="bar-value">1,348</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">tips.mdx</span>
+        <div class="bar-track"><div class="bar-fill green" style="width: 96.7%"></div></div>
+        <span class="bar-value">1,304</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">agents.mdx</span>
+        <div class="bar-track"><div class="bar-fill green" style="width: 82.6%"></div></div>
+        <span class="bar-value">1,113</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">skills.mdx</span>
+        <div class="bar-track"><div class="bar-fill green" style="width: 79.2%"></div></div>
+        <span class="bar-value">1,067</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">overview.mdx</span>
+        <div class="bar-track"><div class="bar-fill green" style="width: 65.9%"></div></div>
+        <span class="bar-value">889</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">settings.mdx</span>
+        <div class="bar-track"><div class="bar-fill violet" style="width: 55.9%"></div></div>
+        <span class="bar-value">754</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">components.mdx</span>
+        <div class="bar-track"><div class="bar-fill amber" style="width: 34.3%"></div></div>
+        <span class="bar-value">463</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">code.mdx</span>
+        <div class="bar-track"><div class="bar-fill violet" style="width: 31.1%"></div></div>
+        <span class="bar-value">419</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">markdown.mdx</span>
+        <div class="bar-track"><div class="bar-fill violet" style="width: 30.0%"></div></div>
+        <span class="bar-value">404</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">index.mdx</span>
+        <div class="bar-track"><div class="bar-fill cyan" style="width: 27.4%"></div></div>
+        <span class="bar-value">370</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">development.mdx</span>
+        <div class="bar-track"><div class="bar-fill cyan" style="width: 25.1%"></div></div>
+        <span class="bar-value">339</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">quickstart.mdx</span>
+        <div class="bar-track"><div class="bar-fill cyan" style="width: 20.8%"></div></div>
+        <span class="bar-value">281</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- File Tree -->
+  <div class="tree-section">
+    <h2>Repository structure</h2>
+    <div class="tree">
+<span class="dir">humanlup/docs</span>
+├── <span class="config">docs.json</span>          <span class="dim">← site config, nav, theme</span>
+├── <span class="config">CLAUDE.md</span>          <span class="dim">← AI assistant context</span>
+├── <span class="config">.gitignore</span>         <span class="dim">← node_modules, .mintlify, OS files</span>
+├── <span class="file">index.mdx</span>          <span class="dim">← homepage</span>
+├── <span class="file">quickstart.mdx</span>     <span class="dim">← 60-second setup</span>
+├── <span class="file">development.mdx</span>    <span class="dim">← local dev environment</span>
+│
+├── <span class="dir">claude-code/</span>       <span class="dim">← AI coding tool guides</span>
+│   ├── <span class="file">overview.mdx</span>
+│   ├── <span class="file">agents.mdx</span>
+│   ├── <span class="file">skills.mdx</span>
+│   ├── <span class="file">workflows.mdx</span>
+│   └── <span class="file">tips.mdx</span>
+│
+├── <span class="dir">essentials/</span>        <span class="dim">← core reference</span>
+│   ├── <span class="file">markdown.mdx</span>
+│   ├── <span class="file">code.mdx</span>
+│   ├── <span class="file">images.mdx</span>
+│   ├── <span class="file">settings.mdx</span>
+│   ├── <span class="file">navigation.mdx</span>
+│   └── <span class="file">reusable-snippets.mdx</span>
+│
+├── <span class="dir">advanced/</span>          <span class="dim">← deeper topics</span>
+│   ├── <span class="file">components.mdx</span>
+│   ├── <span class="file">seo-metadata.mdx</span>
+│   └── <span class="file">versioning.mdx</span>
+│
+├── <span class="dir">api-reference/</span>     <span class="dim">← API documentation</span>
+│   ├── <span class="file">introduction.mdx</span>
+│   ├── <span class="file">authentication.mdx</span>
+│   ├── <span class="config">openapi.json</span>
+│   └── <span class="dir">endpoint/</span>
+│       ├── <span class="file">get.mdx</span>
+│       ├── <span class="file">create.mdx</span>
+│       ├── <span class="file">delete.mdx</span>
+│       └── <span class="file">webhook.mdx</span>
+│
+├── <span class="dir">snippets/</span>          <span class="dim">← reusable content</span>
+│   ├── <span class="file">snippet-intro.mdx</span>
+│   └── <span class="file">prerequisites.mdx</span>
+│
+├── <span class="dir">images/</span>            <span class="dim">← hero, screenshots</span>
+└── <span class="dir">logo/</span>              <span class="dim">← light + dark SVG</span>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>Generated <span class="accent">April 2026</span> · localwolfpackai/docs · built with <span class="accent">Mintlify</span></p>
+  </div>
+
+</div>
+
+</body>
+</html>
