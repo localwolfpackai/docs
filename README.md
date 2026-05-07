@@ -1,17 +1,7 @@
-# humanlup docs
 
-> My personal knowledge base for AI agent tooling, dev workflows, and the stuff I actually use to ship solo.
+# ![HL](https://img.shields.io/badge/DOCS-HumanLup-000000?style=for-the-badge)
 
-```
- _                           _
-| |__  _   _ _ __ ___   __ _| |_ __  _   _ _ __
-| '_ \| | | | '_ ` _ \ / _` | | '_ \| | | | '_ \
-| | | | |_| | | | | | | (_| | | | | | |_| | |_) |
-|_| |_|\__,_|_| |_| |_|\__,_|_|_| |_|\__,_| .__/
-                                            |_|    docs
-```
-
----
+Knowledge base for AI agent tooling, dev workflows, and infinite llm learning. 
 
 ## What is this?
 
@@ -24,6 +14,8 @@ This is my documentation site. I built it with [Mintlify](https://mintlify.com) 
 
 It's not a product. It's my workshop. If you're reading this, you either are me or you found something useful.
 
+---
+
 ## Run it locally
 
 ```bash
@@ -33,7 +25,9 @@ cd docs
 mintlify dev
 ```
 
-Open [localhost:3000](http://localhost:3000). Done.
+→ [localhost:3000](http://localhost:3000)
+
+---
 
 ## Project layout
 
@@ -69,12 +63,16 @@ docs/
 └── favicon.svg
 ```
 
+---
+
 ## How it works
 
 - Every page is an `.mdx` file (Markdown + React components)
 - `docs.json` controls navigation, colors, logos, and everything else
 - Push to `main` and Mintlify deploys automatically via GitHub app
 - `mintlify broken-links` validates all internal links
+
+---
 
 ## Stack
 
@@ -85,6 +83,8 @@ docs/
 | [OpenAPI 3.1](https://www.openapis.org) | Auto-generated API docs from a spec file |
 | [Claude Code](https://claude.ai) | My AI coding agent |
 | [skills.sh](https://skills.sh) | Agent skill packages |
+
+---
 
 ## Troubleshooting
 
@@ -97,4 +97,4 @@ docs/
 
 ---
 
-Built by [@localwolfpackai](https://github.com/localwolfpackai)
+![HL](https://img.shields.io/badge/HL-HumanLup-000000?style=for-the-badge)
